@@ -8,6 +8,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%231f1a17'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%23c8442b'/%3E%3Ccircle cx='32' cy='32' r='2.5' fill='%23f4ead8'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -95,20 +96,20 @@
   .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 
   .disc-wrap { position: relative; width: min(440px, 86vw); aspect-ratio: 1; margin: 0 auto; }
-  .disc { width: 100%; height: 100%; padding: 8%; transition: opacity .6s; }
-  .disc-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; opacity: 0; transition: opacity .8s; touch-action: pan-y; }
-  .disc-wrap.three .disc { opacity: 0; }
-  .disc-wrap.three canvas { opacity: 1; }
+  .disc { width: 100%; height: 100%; padding: 8%; opacity: 0; transition: opacity .6s; }
+  .disc-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; touch-action: pan-y; }
+  .disc-wrap.fallback .disc { opacity: 1; }
+  .disc-wrap.fallback canvas { display: none; }
   .disc .spin { transform-origin: 100px 100px; animation: spin 9s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .badge {
-    position: absolute; right: -4px; bottom: 8%;
-    background: var(--crust); color: var(--ink); border-radius: 50%;
-    width: 104px; height: 104px; display: grid; place-items: center; text-align: center;
-    font: 700 13px/1.1 var(--serif); transform: rotate(-10deg);
-    box-shadow: 0 10px 24px -10px rgba(31,26,23,.45);
+    position: absolute; right: -4px; bottom: 6%; width: 116px; height: 116px; border-radius: 50%;
+    transform: scale(0) rotate(-40deg); transition: transform .7s cubic-bezier(.3,1.6,.5,1);
+    box-shadow: 0 12px 26px -12px rgba(31,26,23,.55);
   }
-  .badge b { display: block; font-size: 34px; line-height: 1; }
+  .badge svg { width: 100%; height: 100%; display: block; }
+  .badge .ring { transform-origin: 60px 60px; animation: spin 28s linear infinite; }
+  .disc-wrap.built .badge, .disc-wrap.fallback .badge { transform: none; }
 
   /* ---------- Marquee ---------- */
   .marquee { background: var(--ink); color: var(--bg); overflow: hidden; white-space: nowrap; padding: 13px 0; }
@@ -289,15 +290,22 @@
 
   /* ---------- Floating WhatsApp ---------- */
   .fab {
-    position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40;
-    transform: translate(-50%, 120px); transition: transform .3s;
+    position: fixed; right: calc(16px + env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40;
+    transform: translateY(120px); transition: transform .45s cubic-bezier(.2,.9,.3,1.15);
     box-shadow: 0 12px 30px -10px rgba(31,26,23,.5);
+    height: 54px; min-width: 54px; padding: 0 16px; gap: 0;
   }
-  .fab.show { transform: translate(-50%, 0); }
-  @media (min-width: 760px) { .fab { left: auto; right: 24px; transform: translateY(120px); } .fab.show { transform: none; } }
+  .fab svg { width: 22px; height: 22px; flex: none; }
+  .fab-label {
+    display: inline-block; max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0;
+    transition: max-width .55s cubic-bezier(.3,.8,.3,1), margin-left .55s cubic-bezier(.3,.8,.3,1), opacity .3s;
+  }
+  .fab.expanded .fab-label { max-width: 190px; margin-left: 9px; opacity: 1; transition-delay: 0s, 0s, .2s; }
+  .fab.show { transform: none; }
+  @media (min-width: 760px) { .fab { right: 24px; bottom: 24px; } }
 
   @media (prefers-reduced-motion: reduce) {
-    .disc .spin, .marquee div, .trinacria-bg, .trinacria-side { animation: none; }
+    .disc .spin, .marquee div, .trinacria-bg, .trinacria-side, .badge .ring { animation: none; }
     * { transition: none !important; }
   }
 </style>
@@ -360,7 +368,19 @@
         <path d="M40 60 A75 75 0 0 1 90 28" stroke="rgba(255,255,255,.12)" stroke-width="5" fill="none" stroke-linecap="round"/>
         <path d="M160 140 A75 75 0 0 1 110 172" stroke="rgba(255,255,255,.06)" stroke-width="5" fill="none" stroke-linecap="round"/>
       </svg>
-      <div class="badge"><span><b>10</b>anni<br>insieme</span></div>
+      <div class="badge" role="img" aria-label="10 anni insieme">
+        <svg viewBox="0 0 120 120">
+          <defs><path id="badgeArc" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0"/></defs>
+          <circle cx="60" cy="60" r="59" fill="#fbf5ea"/>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="#1f1a17" stroke-width="2"/>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="#c8442b" stroke-width="1.4" stroke-dasharray="2.2 3.2"/>
+          <g class="ring">
+            <text font-family="Inter, sans-serif" font-size="8.6" font-weight="600" fill="#1f1a17"><textPath href="#badgeArc" textLength="292" lengthAdjust="spacing">ANNI INSIEME ✦ GRAZIE ✦ ANNI INSIEME ✦ GRAZIE ✦</textPath></text>
+          </g>
+          <text x="60" y="70" text-anchor="middle" font-family="Fraunces, serif" font-size="38" font-weight="700" fill="#c8442b">10</text>
+          <text x="60" y="84" text-anchor="middle" font-size="8" fill="#c98a3c">✦</text>
+        </svg>
+      </div>
     </div>
   </div>
 </section>
@@ -505,9 +525,9 @@
   <p class="credit">Trinacria: <a href="https://game-icons.net/1x1/delapouite/trinacria.html" target="_blank" rel="noopener">Delapouite</a> · <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a></p>
 </footer>
 
-<a class="btn primary fab wa-link" id="fab" href="#" target="_blank" rel="noopener">
+<a class="btn primary fab wa-link" id="fab" href="#" target="_blank" rel="noopener" aria-label="Prenota un tavolo su WhatsApp">
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>
-  Prenota un tavolo
+  <span class="fab-label">Prenota un tavolo</span>
 </a>
 
 <script>
@@ -740,7 +760,7 @@ let ticking = false, settle;
 addEventListener("scroll", () => {
   if (!ticking) { ticking = true; requestAnimationFrame(() => { spy(); ticking = false; }); }
   clearTimeout(settle); settle = setTimeout(() => { lockUntil = 0; spy(true); }, 160);
-  $("#fab").classList.toggle("show", scrollY > 500);
+  fabToggle(scrollY > 500);
 }, { passive: true });
 
 const input = $("#q");
@@ -749,6 +769,20 @@ input.addEventListener("input", () => {
   render(norm(input.value.trim()));
 });
 $("#clear").addEventListener("click", () => { input.value = ""; input.dispatchEvent(new Event("input")); input.focus(); });
+
+// se il giradischi 3D non parte entro 4 s (rete lenta, niente WebGL), mostra il vinile SVG
+setTimeout(() => { const w = $(".disc-wrap"); if (!w.classList.contains("three")) w.classList.add("fallback"); }, 4000);
+
+// bottone WhatsApp flottante: entra come icona, dopo 1 s si allarga e mostra il testo
+const fab = $("#fab");
+let fabTimer;
+function fabToggle(on) {
+  if (on === fab.classList.contains("show")) return;
+  fab.classList.toggle("show", on);
+  clearTimeout(fabTimer);
+  if (on) fabTimer = setTimeout(() => fab.classList.add("expanded"), 450 + 1000);
+  else fab.classList.remove("expanded");
+}
 
 // ancore della pagina (navbar, logo, "Guarda il menu"): scroll morbido sotto l'header
 function glide(y) {
@@ -911,11 +945,14 @@ const mesh = (geo, mat, x = 0, y = 0, z = 0, parent = deck) => {
   m.castShadow = m.receiveShadow = true; parent.add(m); return m;
 };
 
+const group = () => { const g = new THREE.Group(); deck.add(g); return g; };
+
 // base in legno + piano scuro
-mesh(new RoundedBoxGeometry(4.6, 0.42, 3.7, 4, 0.08), M.wood, 0, -0.21, 0);
-mesh(new RoundedBoxGeometry(4.44, 0.04, 3.54, 2, 0.02), M.top, 0, 0.005, 0);
+const baseG = group(), plateG = group();
+mesh(new RoundedBoxGeometry(4.6, 0.42, 3.7, 4, 0.08), M.wood, 0, -0.21, 0, baseG);
+mesh(new RoundedBoxGeometry(4.44, 0.04, 3.54, 2, 0.02), M.top, 0, 0.005, 0, plateG);
 for (const [x, z] of [[-2, -1.55], [2, -1.55], [-2, 1.55], [2, 1.55]])
-  mesh(new THREE.CylinderGeometry(0.17, 0.2, 0.1, 24), M.dark, x, -0.47, z);
+  mesh(new THREE.CylinderGeometry(0.17, 0.2, 0.1, 24), M.dark, x, -0.47, z, baseG);
 
 // piatto + vinile (ruotano insieme)
 const PX = -0.5;
@@ -932,9 +969,10 @@ mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.12, 16), M.metal, 0, 0.22, 0, sp
 
 // braccio
 const PIV = new THREE.Vector3(1.55, 0, -1.2);
-mesh(new THREE.CylinderGeometry(0.26, 0.3, 0.1, 40), M.dark, PIV.x, 0.05, PIV.z);
-mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.26, 24), M.metal, PIV.x, 0.2, PIV.z);
-const arm = new THREE.Group(); arm.position.set(PIV.x, 0.36, PIV.z); deck.add(arm);
+const armG = group();
+mesh(new THREE.CylinderGeometry(0.26, 0.3, 0.1, 40), M.dark, PIV.x, 0.05, PIV.z, armG);
+mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.26, 24), M.metal, PIV.x, 0.2, PIV.z, armG);
+const arm = new THREE.Group(); arm.position.set(PIV.x, 0.36, PIV.z); armG.add(arm);
 const pitch = new THREE.Group(); arm.add(pitch);
 mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.22, 24), M.dark, 0, 0, -0.32, pitch).rotation.x = Math.PI / 2; // contrappeso
 const tube = mesh(new THREE.CylinderGeometry(0.035, 0.035, 2.05, 16), M.metal, 0, 0, 0.92, pitch);
@@ -943,14 +981,42 @@ const head = mesh(new THREE.BoxGeometry(0.2, 0.05, 0.34), M.dark, -0.04, -0.03, 
 head.rotation.y = 0.35;
 mesh(new THREE.BoxGeometry(0.13, 0.1, 0.17), M.crust, -0.05, -0.1, 2.04, pitch);
 // appoggio del braccio
-mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.28, 12), M.metal, PIV.x + 0.18, 0.14, 0.9);
+const armRest = mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.28, 12), M.metal, PIV.x + 0.18, 0.14, 0.9);
 
 // comandi
-mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.12, 32), M.metal, 1.75, 0.07, 1.3);
-mesh(new THREE.BoxGeometry(0.36, 0.05, 0.16), M.crust, 1.05, 0.04, 1.45);
-mesh(new THREE.BoxGeometry(0.36, 0.05, 0.16), M.dark, 1.05, 0.04, 1.2);
+const knob = mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.12, 32), M.metal, 1.75, 0.07, 1.3);
+const btn45 = mesh(new THREE.BoxGeometry(0.36, 0.05, 0.16), M.crust, 1.05, 0.04, 1.45);
+const btn33 = mesh(new THREE.BoxGeometry(0.36, 0.05, 0.16), M.dark, 1.05, 0.04, 1.2);
 const led = mesh(new THREE.SphereGeometry(0.045, 16, 12), M.led, 1.75, 0.04, 0.85);
 led.castShadow = false;
+
+// ---------- montaggio: ogni pezzo arriva dal suo punto di partenza ----------
+// at = secondo d'inizio, dur = durata, from = scostamento iniziale (posizione / scala / rotazione)
+const PARTS = [
+  { o: baseG,   at: 0.00, dur: 0.75, from: { y: -2.2, s: 0.85 } },
+  { o: plateG,  at: 0.30, dur: 0.55, from: { y: 1.6 } },
+  { o: spinner, at: 0.55, dur: 0.85, from: { y: 3.2, ry: 5 } },
+  { o: vinyl,   at: 1.00, dur: 0.75, from: { y: 2.6, ry: -3, rx: 0.35 } },
+  { o: armG,    at: 1.30, dur: 0.75, from: { x: 1.6, y: 1.8, z: -1.2 } },
+  { o: armRest, at: 1.55, dur: 0.45, from: { s: 0 } },
+  { o: knob,    at: 1.65, dur: 0.45, from: { s: 0 } },
+  { o: btn45,   at: 1.72, dur: 0.45, from: { s: 0 } },
+  { o: btn33,   at: 1.79, dur: 0.45, from: { s: 0 } },
+  { o: led,     at: 1.86, dur: 0.45, from: { s: 0 } },
+];
+const BUILT = Math.max(...PARTS.map(p => p.at + p.dur));
+for (const p of PARTS) p.base = { pos: p.o.position.clone(), rot: p.o.rotation.clone(), s: p.o.scale.x };
+const outBack = t => { const c = 1.5; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+function assemble(t) {
+  for (const { o, at, dur, from, base } of PARTS) {
+    const k = THREE.MathUtils.clamp((t - at) / dur, 0, 1);
+    o.visible = k > 0;
+    const e = from.s === 0 ? outBack(k) : 1 - Math.pow(1 - k, 3), r = 1 - e;   // pop o atterraggio morbido
+    o.position.set(base.pos.x + (from.x || 0) * r, base.pos.y + (from.y || 0) * r, base.pos.z + (from.z || 0) * r);
+    o.rotation.set(base.rot.x + (from.rx || 0) * r, base.rot.y + (from.ry || 0) * r, base.rot.z);
+    o.scale.setScalar(base.s * (from.s ?? 1) * r + base.s * e);
+  }
+}
 
 // ombra a terra
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.2 }));
@@ -999,12 +1065,14 @@ new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loo
 const REST = 0.05, PLAY = -0.42;
 const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const clock = new THREE.Clock();
-let speed = 0, running = false;
+let speed = 0, running = false, built = false;
 
 function frame() {
   const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
-  const delay = 0.6;
-  // 0–1.2s: alza e ruota il braccio · 1.2–1.8s: abbassa · poi gira
+  // montaggio, poi: alza e ruota il braccio (1.2 s) · abbassa la puntina (0.6 s) · il disco parte
+  if (!reduce && t < BUILT + 0.1) assemble(t);
+  else if (!built) { assemble(99); built = true; wrap.classList.add("built"); }
+  const delay = reduce ? 0 : BUILT + 0.35;
   const swing = reduce ? 1 : ease(THREE.MathUtils.clamp((t - delay) / 1.2, 0, 1));
   const drop = reduce ? 1 : ease(THREE.MathUtils.clamp((t - delay - 1.2) / 0.6, 0, 1));
   arm.rotation.y = REST + (PLAY - REST) * swing;
@@ -1013,7 +1081,7 @@ function frame() {
   const target = reduce ? 0 : playing ? 2.1 + boost : 0;
   speed += (target - speed) * Math.min(dt * 1.6, 1);
   boost *= Math.pow(0.15, dt);
-  spinner.rotation.y -= speed * dt;
+  if (built) spinner.rotation.y -= speed * dt;
   led.material.emissiveIntensity = playing ? 2 + Math.sin(t * 3) * 0.4 : 0.3;
   pitch.position.y = playing && !reduce ? Math.sin(t * 22) * 0.002 : 0;   // micro-vibrazione della puntina
 
