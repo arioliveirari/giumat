@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f4ead8">
+<title>Giumat — Bar · Focacceria</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%231f1a17'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%23c8442b'/%3E%3Ccircle cx='32' cy='32' r='2.5' fill='%23f4ead8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4ead8;
+    --bg-2: #ede0c8;
+    --card: #fbf5ea;
+    --ink: #1f1a17;
+    --muted: #6b5d50;
+    --faint: #9a8a78;
+    --line: rgba(31, 26, 23, .12);
+    --tomato: #c8442b;
+    --olive: #5d6b2f;
+    --crust: #c98a3c;
+    --radius: 20px;
+    --serif: "Fraunces", Georgia, serif;
+    --sans: "Inter", system-ui, -apple-system, sans-serif;
+    --head: 60px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-padding-top: 130px; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 400 15px/1.55 var(--sans);
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  button, input { font: inherit; color: inherit; }
+  a { color: inherit; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Demo ribbon ---------- */
+  .demo {
+    background: var(--ink); color: var(--bg); text-align: center;
+    font-size: 11.5px; letter-spacing: .06em; padding: 7px 16px;
+  }
+  .demo b { color: var(--crust); font-weight: 600; }
+
+  /* ---------- Header ---------- */
+  .head {
+    position: sticky; top: 0; z-index: 30; height: var(--head);
+    background: rgba(244, 234, 216, .86);
+    backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--line);
+  }
+  .head .wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .brand svg { flex: none; }
+  .brand span { font: 700 22px/1 var(--serif); letter-spacing: -.01em; }
+  .head nav { display: none; gap: 22px; font-size: 13.5px; }
+  .head nav a { text-decoration: none; color: var(--muted); position: relative; padding: 4px 0; transition: color .2s; }
+  .head nav a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; border-radius: 2px;
+    background: var(--tomato); transform: scaleX(0); transition: transform .3s ease;
+  }
+  .head nav a:hover, .head nav a.active { color: var(--ink); }
+  .head nav a.active::after { transform: scaleX(1); }
+  @media (min-width: 760px) { .head nav { display: flex; } }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border-radius: 999px; padding: 11px 18px; font-weight: 600; font-size: 14px;
+    text-decoration: none; border: 1.5px solid var(--ink); cursor: pointer; transition: transform .15s, background .2s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn.primary { background: var(--tomato); border-color: var(--tomato); color: #fff8ef; }
+  .btn.primary:hover { background: #b33a23; }
+  .btn.ghost { background: transparent; }
+  .btn.ghost:hover { background: var(--bg-2); }
+  .btn.small { padding: 8px 14px; font-size: 13px; }
+
+  /* ---------- Hero ---------- */
+  .hero { padding: 40px 0 56px; position: relative; }
+  .hero .wrap { display: grid; gap: 28px; align-items: center; }
+  @media (min-width: 760px) { .hero .wrap { grid-template-columns: 1.2fr 1fr; } .hero { padding: 72px 0 80px; } }
+  .status {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 500;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
+  }
+  .status i { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+  .status.open i { background: #3f9b4f; box-shadow: 0 0 0 4px rgba(63,155,79,.18); }
+  .hero h1 {
+    font: 500 clamp(44px, 11vw, 84px)/.98 var(--serif); letter-spacing: -.025em; margin: 18px 0 16px;
+  }
+  .hero h1 em { color: var(--tomato); font-style: italic; }
+  .hero p.lead { color: var(--muted); font-size: 16.5px; max-width: 460px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+
+  .disc-wrap { position: relative; width: min(440px, 86vw); aspect-ratio: 1; margin: 0 auto; }
+  .disc { width: 100%; height: 100%; padding: 8%; transition: opacity .6s; }
+  .disc-wrap canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; opacity: 0; transition: opacity .8s; touch-action: pan-y; }
+  .disc-wrap.three .disc { opacity: 0; }
+  .disc-wrap.three canvas { opacity: 1; }
+  .disc .spin { transform-origin: 100px 100px; animation: spin 9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .badge {
+    position: absolute; right: -4px; bottom: 8%;
+    background: var(--crust); color: var(--ink); border-radius: 50%;
+    width: 104px; height: 104px; display: grid; place-items: center; text-align: center;
+    font: 700 13px/1.1 var(--serif); transform: rotate(-10deg);
+    box-shadow: 0 10px 24px -10px rgba(31,26,23,.45);
+  }
+  .badge b { display: block; font-size: 34px; line-height: 1; }
+
+  /* ---------- Marquee ---------- */
+  .marquee { background: var(--ink); color: var(--bg); overflow: hidden; white-space: nowrap; padding: 13px 0; }
+  .marquee div { display: inline-block; animation: slide 30s linear infinite; font: 500 18px var(--serif); }
+  .marquee span { margin: 0 18px; }
+  .marquee span:nth-child(even) { color: var(--crust); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+
+  /* ---------- Sections ---------- */
+  section.block { padding: 64px 0 8px; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: var(--tomato); }
+  h2.title { font: 500 clamp(34px, 6vw, 50px)/1.05 var(--serif); letter-spacing: -.02em; margin: 8px 0 12px; }
+  .sub { color: var(--muted); max-width: 560px; }
+
+  /* ---------- Menu ---------- */
+  .menu-bar {
+    position: sticky; top: var(--head); z-index: 20; margin: 22px -16px 0; padding: 10px 16px;
+    background: rgba(244, 234, 216, .9);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .search {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 999px; padding: 9px 16px; margin-bottom: 10px;
+  }
+  .search:focus-within { border-color: var(--tomato); }
+  .search svg { flex: none; color: var(--faint); }
+  .search input { flex: 1; background: none; border: 0; outline: 0; min-width: 0; }
+  .search input::placeholder { color: var(--faint); }
+  .search .clear { background: none; border: 0; color: var(--faint); cursor: pointer; display: none; font-size: 18px; line-height: 1; }
+  .search.has-value .clear { display: block; }
+  .tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; overscroll-behavior-x: contain; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: none; border: 1px solid var(--line); background: transparent;
+    padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    font-size: 13px; font-weight: 500; color: var(--muted); transition: all .2s;
+  }
+  .tab:hover { color: var(--ink); border-color: rgba(31,26,23,.3); }
+  .tab.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+
+  .msec { padding-top: 36px; }
+  .msec-head { display: flex; align-items: baseline; gap: 12px; }
+  .msec-head h3 { font: 500 clamp(28px, 5vw, 36px)/1.1 var(--serif); }
+  .msec-head .count { color: var(--faint); font-size: 12px; letter-spacing: .1em; }
+  .msec-head::after { content: ""; flex: 1; height: 1px; background: var(--line); align-self: center; }
+  .msec-note { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
+
+  .items { display: grid; grid-template-columns: 1fr; gap: 0 36px; }
+  @media (min-width: 760px) { .items { grid-template-columns: 1fr 1fr; } }
+  .item { padding: 16px 0; border-bottom: 1px dashed var(--line); display: grid; grid-template-columns: 1fr auto; gap: 3px 16px; }
+  .item-name { font: 600 19px/1.25 var(--serif); }
+  .item-price { font-weight: 600; font-size: 14px; color: var(--tomato); font-variant-numeric: tabular-nums; white-space: nowrap; padding-top: 3px; }
+  .item-desc { grid-column: 1 / -1; color: var(--muted); font-size: 13.5px; }
+  .item-extra { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
+  .chip { font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--card); }
+  .chip.veg { color: var(--olive); border-color: rgba(93,107,47,.35); background: rgba(93,107,47,.08); }
+  .chip.hot { color: var(--tomato); border-color: rgba(200,68,43,.35); background: rgba(200,68,43,.07); }
+  mark { background: rgba(201,138,60,.35); color: inherit; border-radius: 3px; padding: 0 1px; }
+
+  .feature {
+    margin-top: 18px; padding: 24px; border-radius: var(--radius);
+    background: var(--ink); color: var(--bg); position: relative; overflow: hidden;
+  }
+  .feature::after {
+    content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%;
+    background: radial-gradient(circle, var(--crust) 0 18%, transparent 19%), repeating-radial-gradient(circle, #2c2521 0 2px, #1f1a17 2px 5px);
+    opacity: .9;
+  }
+  .feature .label { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--crust); }
+  .feature .row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin: 6px 0 8px; position: relative; z-index: 1; max-width: calc(100% - 90px); }
+  .feature h4 { font: 500 30px/1.1 var(--serif); }
+  .feature .price { font-size: 18px; color: var(--crust); font-weight: 600; white-space: nowrap; }
+  .feature p { color: #cbbfae; max-width: 480px; position: relative; z-index: 1; }
+
+  .secret {
+    margin-top: 22px; border: 1.5px dashed var(--olive); border-radius: var(--radius);
+    padding: 18px 20px; display: flex; gap: 14px; align-items: center; cursor: pointer;
+    background: rgba(93,107,47,.06); width: 100%; text-align: left;
+  }
+  .secret .ico { flex: none; width: 42px; height: 42px; border-radius: 50%; background: var(--olive); color: #f4ead8; display: grid; place-items: center; }
+  .secret strong { font: 600 18px var(--serif); display: block; }
+  .secret small { color: var(--muted); font-size: 13px; }
+  .secret-body { display: none; }
+  .secret.open .secret-body { display: block; }
+  .secret.open .secret-hint { display: none; }
+
+  .empty { text-align: center; color: var(--muted); padding: 50px 0; display: none; }
+  .empty.show { display: block; }
+
+  /* ---------- No fritti ---------- */
+  .nofry {
+    margin-top: 40px; display: grid; gap: 6px; padding: 22px 24px; border-radius: var(--radius);
+    background: var(--bg-2); border: 1px solid var(--line);
+  }
+  .nofry strong { font: 600 20px var(--serif); }
+  .nofry p { color: var(--muted); font-size: 14px; }
+
+  /* ---------- Atmosfera ---------- */
+  .vibes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 26px; }
+  @media (min-width: 760px) { .vibes { grid-template-columns: repeat(4, 1fr); } }
+  .vibe {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 20px 18px; display: grid; gap: 10px; align-content: start;
+  }
+  .vibe svg { color: var(--tomato); }
+  .vibe strong { font: 600 18px/1.2 var(--serif); }
+  .vibe p { color: var(--muted); font-size: 13px; }
+
+  .events { margin-top: 28px; display: grid; gap: 10px; }
+  .event {
+    display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center;
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px 12px 12px;
+  }
+  .event .date { background: var(--ink); color: var(--bg); border-radius: 12px; text-align: center; padding: 8px 0; line-height: 1.1; }
+  .event .date b { display: block; font: 700 22px var(--serif); }
+  .event .date small { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--crust); }
+  .event strong { font: 600 17px var(--serif); display: block; }
+  .event span { color: var(--muted); font-size: 13px; }
+  .event .when { font-size: 13px; font-weight: 600; color: var(--tomato); white-space: nowrap; }
+
+  /* ---------- Reviews ---------- */
+  .rating { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 22px; }
+  .rating .big { font: 500 72px/1 var(--serif); letter-spacing: -.03em; }
+  .stars { color: var(--crust); font-size: 20px; letter-spacing: 2px; }
+  .rating small { color: var(--muted); font-size: 13px; display: block; }
+  .praise { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .praise span { font-size: 13.5px; padding: 8px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+
+  /* ---------- Info ---------- */
+  .info { display: grid; gap: 14px; margin-top: 26px; }
+  @media (min-width: 760px) { .info { grid-template-columns: 1fr 1fr; } }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
+  .panel h4 { font: 600 20px var(--serif); margin-bottom: 12px; }
+  .hours { list-style: none; }
+  .hours li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+  .hours li:last-child { border: 0; }
+  .hours li span:last-child { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+  .hours li.today { font-weight: 600; }
+  .hours li.today span:last-child { color: var(--tomato); }
+  .contact { display: grid; gap: 10px; }
+  .contact a {
+    display: flex; align-items: center; gap: 12px; text-decoration: none;
+    padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg);
+    font-size: 14px; transition: border-color .2s;
+  }
+  .contact a:hover { border-color: var(--tomato); }
+  .contact a svg { color: var(--tomato); flex: none; }
+  .contact a small { display: block; color: var(--faint); font-size: 12px; }
+  .map { margin-top: 14px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16/10; background: var(--bg-2); }
+  .map iframe { width: 100%; height: 100%; border: 0; filter: sepia(.25) saturate(.9); }
+
+  /* ---------- Sicilia: trinacria & maiolica ---------- */
+  .trinacria-bg {
+    position: fixed; z-index: -1; pointer-events: none; color: var(--ink);
+    width: min(78vw, 640px); aspect-ratio: 1; right: max(-30vw, -260px); top: 16vh; opacity: .045;
+    animation: spin 240s linear infinite;
+  }
+  #atmosfera { position: relative; overflow: hidden; }
+  .trinacria-side {
+    position: absolute; z-index: -1; pointer-events: none; color: var(--tomato);
+    width: 380px; aspect-ratio: 1; left: -190px; top: 30px; opacity: .07;
+    animation: spin 180s linear infinite reverse;
+  }
+  .maiolica {
+    height: 34px; margin-top: 72px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Crect width='34' height='34' fill='%23fbf5ea'/%3E%3Cpath d='M17 3 31 17 17 31 3 17Z' fill='none' stroke='%235d6b2f' stroke-width='1.4'/%3E%3Ccircle cx='17' cy='17' r='5.5' fill='%23c8442b'/%3E%3Ccircle cx='17' cy='17' r='2' fill='%23c98a3c'/%3E%3Cpath d='M0 0h6a6 6 0 0 1-6 6zM34 0v6a6 6 0 0 1-6-6zM0 34v-6a6 6 0 0 1 6 6zM34 34h-6a6 6 0 0 1 6-6z' fill='%23c98a3c'/%3E%3Cpath d='M17 0v3M17 31v3M0 17h3M31 17h3' stroke='%235d6b2f' stroke-width='1.4'/%3E%3C/svg%3E") repeat-x center / auto 100%;
+    border-block: 2px solid var(--ink);
+  }
+  footer .tri { width: 46px; height: 46px; color: var(--tomato); margin: 0 auto 14px; display: block; opacity: .85; }
+  footer .credit { margin-top: 14px; font-size: 10.5px; opacity: .7; }
+  footer .credit a { color: inherit; }
+  footer .love { margin-top: 6px; font: italic 500 14px var(--serif); color: var(--muted); }
+
+  footer { text-align: center; color: var(--faint); font-size: 12px; padding: 40px 16px 110px; }
+  footer .brand { justify-content: center; margin-bottom: 10px; color: var(--ink); }
+
+  /* ---------- Floating WhatsApp ---------- */
+  .fab {
+    position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40;
+    transform: translate(-50%, 120px); transition: transform .3s;
+    box-shadow: 0 12px 30px -10px rgba(31,26,23,.5);
+  }
+  .fab.show { transform: translate(-50%, 0); }
+  @media (min-width: 760px) { .fab { left: auto; right: 24px; transform: translateY(120px); } .fab.show { transform: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .disc .spin, .marquee div, .trinacria-bg, .trinacria-side { animation: none; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- Trinacria: "Trinacria" by Delapouite (game-icons.net), CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/ — ricolorata -->
+  <symbol id="trinacria" viewBox="0 0 512 512">
+    <path fill="currentColor" d="M264.8 40.41c-43.4 3.83-98.3 32.01-146.8 54.41h-.1l-.1.11c-5.9 2.58-9.1.51-12.1-.73s-5.9-2.9-9-4.87c-6.36-3.95-13.6-9.17-20.76-14.29-7.15-5.11-14.25-10.1-19.59-13.26-1.41-.83-2.13-1.09-3.2-1.63l-4.46 7.67c4.65 9.52 13.82 24.61 23.63 37.58 5.6 7.4 11.37 14.2 16.25 18.8 4.85 4.6 9.43 6 8.13 6 1.8.1 1.9 0 3.9-2 2.1-2.1 4.9-6.2 8.9-10.6l2.4-2.6 3.5-.4c17.6-1.8 38.5-.9 57.8-4.6 19.1-3.6 35.7-10.83 47.2-28.38 0-.11.1-.13.1-.23l15.4 10.37c0 .1-.1.12-.1.23-10 14.41-20.7 35.41-29.2 55.31 9.8-3.8 20.3-5.8 31.4-5.8 8.6 0 16.9 1.2 24.7 3.5 2.6-12.5 4.5-25.2 5.6-37.3 2.1-21.05 2-40.43.1-53.46-.8-6.52-2.4-11.48-3.5-13.62l-.1-.21zm197.5 99.49c-1.6 0-3.1 0-4.8.2-8.7.2-18.6.8-27.8 1.9-9.3 1.2-17.9 2.8-24.4 4.7-5.9 1.8-9.5 4.6-9.4 4.3-.7 1.2-.7 1.6 0 4.2.7 2.9 2.8 7.2 4.7 12.8l1.2 3.4-1.5 3.3c-7.4 16.2-18.6 34-25 52.4-6.5 18.4-8.5 36.4 1.1 55.1 0 .1.1.2.1.3l-16.7 8.1c-.1-.1-.1-.2-.1-.3-7.5-15.7-20.2-35.2-33-52.4-1.7 20.1-10 38.2-22.8 52.3 8.5 7.3 17.3 14.3 26 20.5 17.2 12.2 34 21.9 46.3 26.8 6 2.4 11 3.7 13.5 3.8h.2c18.2-39.5 21.3-101.4 26.2-154.4.6-6.5 4-8.3 6.6-10.3 2.6-2 5.5-3.7 8.7-5.5 6.6-3.5 14.8-7.1 22.8-10.8 8.1-3.6 15.9-7.2 21.3-10.3 1.5-.7 2-1.3 3-2l-4.3-7.6c-3.5-.2-7.4-.5-11.9-.5zM395.9 151c.1-.1.1-.1.1-.2-.1.1-.1.1-.1.2zM238 159.5c-39.3 0-71 31.7-71 71s31.7 71 71 71 71-31.7 71-71-31.7-71-71-71zM190 215h96v18h-96v-18zm-38.6 36.1c-9.7 3.5-19.2 7.3-28.2 11.4-19.3 8.8-35.96 18.5-46.32 26.7-5.17 4-8.71 7.8-10 9.8-.12.2 0 .1-.12.2 24.99 35.6 76.94 69.2 120.54 100h.1c5.2 3.8 5 7.7 5.5 10.9.4 3.2.4 6.5.3 10.2-.2 7.5-1.2 16.4-2 25.2-.8 8.7-1.7 17.4-1.7 23.6-.1 1.6.1 2.4.1 3.6h8.8c5.9-8.8 14.4-24.3 20.8-39.3 3.7-8.5 6.6-16.9 8.1-23.5 1.6-6.3.6-11.1 1.2-10.2-.8-1.3-1-1.4-3.8-2.1-2.8-.8-7.6-1.2-13.5-2.4l-3.5-.7-2.1-3c-10.3-14.4-20.1-32.9-32.7-47.8-12.8-14.8-27.2-25.5-48.3-26.7h-.3l1.4-18.6h.3c15 1.3 34.4.5 53.1-1.3-13.5-12-23.4-27.9-27.7-46zm86.6.9a32 16 0 0 1 32 16 32 16 0 0 1-32 16 32 16 0 0 1-32-16 32 16 0 0 1 32-16z"/>
+  </symbol>
+</svg>
+<svg class="trinacria-bg" aria-hidden="true"><use href="#trinacria"/></svg>
+
+<div class="demo"><b>Anteprima</b> · proposta grafica con contenuti e prezzi di esempio</div>
+
+<header class="head">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Giumat">
+      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#1f1a17"/><circle cx="32" cy="32" r="22" fill="none" stroke="#3a322d" stroke-width="1.2"/><circle cx="32" cy="32" r="17" fill="none" stroke="#3a322d" stroke-width="1.2"/><circle cx="32" cy="32" r="11" fill="#c8442b"/><circle cx="32" cy="32" r="2.5" fill="#f4ead8"/></svg>
+      <span>Giumat</span>
+    </a>
+    <nav aria-label="Pagina">
+      <a href="#menu">Menu</a><a href="#atmosfera">Atmosfera</a><a href="#serate">Serate</a><a href="#info">Orari &amp; dove</a>
+    </nav>
+    <a class="btn primary small wa-link" href="#" target="_blank" rel="noopener">Prenota</a>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="status" id="status"><i></i><span>…</span></span>
+      <h1>La vostra <em>focacceria</em> di fiducia.</h1>
+      <p class="lead">Focacce fatte da noi, taglieri da condividere, birre artigianali che non trovi altrove e un giradischi sempre acceso. A San Giovanni Gemini.</p>
+      <div class="cta">
+        <a class="btn primary wa-link" href="#" target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>
+          Prenota su WhatsApp
+        </a>
+        <a class="btn ghost" href="#menu">Guarda il menu</a>
+      </div>
+    </div>
+    <div class="disc-wrap" aria-hidden="true">
+      <svg class="disc" viewBox="0 0 200 200">
+        <defs>
+          <radialGradient id="shine" cx="30%" cy="25%" r="80%"><stop offset="0" stop-color="#4a413b"/><stop offset=".5" stop-color="#1f1a17"/><stop offset="1" stop-color="#14100e"/></radialGradient>
+        </defs>
+        <circle cx="100" cy="100" r="98" fill="url(#shine)"/>
+        <g class="spin">
+        <g fill="none" stroke="#2f2824" stroke-width=".8">
+          <circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="84"/><circle cx="100" cy="100" r="78"/>
+          <circle cx="100" cy="100" r="72"/><circle cx="100" cy="100" r="66"/><circle cx="100" cy="100" r="60"/><circle cx="100" cy="100" r="54"/><circle cx="100" cy="100" r="48"/>
+        </g>
+        <circle cx="100" cy="100" r="38" fill="#c8442b"/>
+        <path id="lbl" d="M100 74 a26 26 0 1 1 -.1 0" fill="none"/>
+        <text font-family="Fraunces, serif" font-size="7.6" font-weight="700" fill="#f4ead8"><textPath href="#lbl" textLength="160" lengthAdjust="spacing">GIUMAT · BAR · FOCACCERIA · </textPath></text>
+        <circle cx="100" cy="100" r="4" fill="#f4ead8"/>
+        </g>
+        <path d="M40 60 A75 75 0 0 1 90 28" stroke="rgba(255,255,255,.12)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M160 140 A75 75 0 0 1 110 172" stroke="rgba(255,255,255,.06)" stroke-width="5" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div class="badge"><span><b>10</b>anni<br>insieme</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee" aria-hidden="true"><div id="marq"></div></div>
+
+<!-- ================= MENU ================= -->
+<section class="block" id="menu">
+  <div class="wrap">
+    <div class="eyebrow">Il menu</div>
+    <h2 class="title">Dal forno al bancone</h2>
+    <p class="sub">Impasti a lunga lievitazione, prodotti del territorio e una lista di birre che cambia spesso.</p>
+
+    <div class="menu-bar" id="menuBar">
+      <label class="search" id="searchBox">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" placeholder="Cerca una focaccia, una birra…" autocomplete="off">
+        <button class="clear" id="clear" type="button" aria-label="Cancella">×</button>
+      </label>
+      <nav class="tabs" id="tabs" aria-label="Sezioni del menu"></nav>
+    </div>
+
+    <div id="menuList"></div>
+    <p class="empty" id="empty">Nessun risultato. Prova con un altro nome.</p>
+
+    <button class="secret" id="secret" type="button" aria-expanded="false">
+      <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10z"/><path d="M2 21c0-3 1.9-5.4 5.2-6"/></svg></span>
+      <span>
+        <strong>Il menu segreto vegano</strong>
+        <small class="secret-hint">Esiste, ma non è scritto da nessuna parte. Tocca per un indizio.</small>
+        <small class="secret-body">Chiedilo al bancone: panini vegani fuori carta, che cambiano con le verdure del momento. Chi lo sa, lo sa. 🌱</small>
+      </span>
+    </button>
+
+    <div class="nofry">
+      <strong>Qui niente fritti. Solo forno.</strong>
+      <p>Niente panelle né patatine: puntiamo tutto sull'impasto. Se cerchi il fritto, ti consigliamo una focaccia in più.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ATMOSFERA ================= -->
+<section class="block" id="atmosfera">
+  <svg class="trinacria-side" aria-hidden="true"><use href="#trinacria"/></svg>
+  <div class="wrap">
+    <div class="eyebrow">L'atmosfera</div>
+    <h2 class="title">Più di un bar.<br>Un salotto con il giradischi.</h2>
+    <p class="sub">Un posto di famiglia dove fermarsi con calma: si mangia, si beve bene e si resta a chiacchierare.</p>
+    <div class="vibes">
+      <div class="vibe">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 5a7 7 0 0 0-7 7" stroke-linecap="round"/></svg>
+        <strong>Angolo vinili</strong><p>Sempre un disco sul piatto. Puoi anche sceglierlo tu.</p>
+      </div>
+      <div class="vibe">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>
+        <strong>Libri</strong><p>Una piccola libreria da sfogliare mentre aspetti.</p>
+      </div>
+      <div class="vibe">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M9 17h6l-1-5h2l-2-4 1-3a2 2 0 0 0-4 0l1 3-2 4h2z"/></svg>
+        <strong>Scacchi</strong><p>Una partita tra una birra e l'altra.</p>
+      </div>
+      <div class="vibe">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        <strong>Musica dal vivo</strong><p>Live set, sax e serate a tema durante la settimana.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SERATE ================= -->
+<section class="block" id="serate">
+  <div class="wrap">
+    <div class="eyebrow">Prossime serate</div>
+    <h2 class="title">In programma</h2>
+    <div class="events" id="events"></div>
+  </div>
+</section>
+
+<!-- ================= RECENSIONI ================= -->
+<section class="block" id="recensioni">
+  <div class="wrap">
+    <div class="eyebrow">Dicono di noi</div>
+    <div class="rating">
+      <div class="big">4,9</div>
+      <div><div class="stars">★★★★★</div><small>su Google · oltre 60 recensioni</small></div>
+    </div>
+    <div class="praise">
+      <span>🫓 Focaccia spettacolare</span><span>🍺 Birre introvabili</span><span>🌱 Panini vegani top</span>
+      <span>🎶 Buona musica</span><span>🤝 Gestione familiare</span><span>☕ Ottimo caffè</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= INFO ================= -->
+<section class="block" id="info">
+  <div class="wrap">
+    <div class="eyebrow">Orari &amp; dove siamo</div>
+    <h2 class="title">Vieni a trovarci</h2>
+    <div class="info">
+      <div class="panel">
+        <h4>Orari</h4>
+        <ul class="hours" id="hours"></ul>
+      </div>
+      <div class="panel">
+        <h4>Contatti</h4>
+        <div class="contact">
+          <a href="https://maps.google.com/?q=Giumat+Bar+Focacceria+Via+Eremita+San+Giovanni+Gemini" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+            <span>Via Eremita 6<small>92020 San Giovanni Gemini (AG)</small></span>
+          </a>
+          <a class="wa-link" href="#" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>
+            <span>Scrivici su WhatsApp<small>328 874 0453 · info e prenotazioni</small></span>
+          </a>
+          <a href="tel:+393288740453">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+            <span>Chiamaci<small>+39 328 874 0453</small></span>
+          </a>
+          <a href="https://www.instagram.com/giumat_focacceria/" target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+            <span>@giumat_focacceria<small>Novità, serate e focaccia del giorno</small></span>
+          </a>
+        </div>
+        <div class="map">
+          <iframe loading="lazy" title="Mappa" src="https://maps.google.com/maps?q=Via%20Eremita%206%2C%20San%20Giovanni%20Gemini&z=16&output=embed"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="maiolica" aria-hidden="true"></div>
+
+<footer>
+  <svg class="tri" aria-hidden="true"><use href="#trinacria"/></svg>
+  <a class="brand" href="#top">
+    <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#1f1a17"/><circle cx="32" cy="32" r="11" fill="#c8442b"/><circle cx="32" cy="32" r="2.5" fill="#f4ead8"/></svg>
+    <span>Giumat</span>
+  </a>
+  <p>Bar · Focacceria · San Giovanni Gemini · Prezzi in euro</p>
+  <p class="love">Fatto con amore in Sicilia</p>
+  <p class="credit">Trinacria: <a href="https://game-icons.net/1x1/delapouite/trinacria.html" target="_blank" rel="noopener">Delapouite</a> · <a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener">CC BY 3.0</a></p>
+</footer>
+
+<a class="btn primary fab wa-link" id="fab" href="#" target="_blank" rel="noopener">
+  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>
+  Prenota un tavolo
+</a>
+
+<script>
+// ============ DATI (di esempio) ============
+const PHONE = "393288740453";
+
+// [nome, prezzo, descrizione, tags]  — tags: "veg" | "vegan" | "new" | "hot" o testo libero
+const MENU = [
+  { id: "focacce", title: "Focacce",
+    note: "Impasto a lunga lievitazione, cotta su pietra. Intera o mezza.",
+    feature: { label: "Focaccia del giorno", name: "Chiedi al bancone", price: 10,
+      desc: "Ogni giorno una focaccia diversa con quello che offre la stagione e il mercato. Raccontiamo il gusto del giorno sulle nostre storie Instagram." },
+    items: [
+      ["Classica", 6, "Pomodorino, origano di montagna, olio EVO siciliano", ["vegan"]],
+      ["Mortadella & pistacchio", 11, "Mortadella IGP, stracciatella, granella di pistacchio"],
+      ["Crudo & burrata", 12, "Prosciutto crudo stagionato, burrata, rucola, pomodorini"],
+      ["Norma", 10, "Melanzane al forno, salsa di pomodoro, ricotta salata, basilico", ["veg"]],
+      ["Salsiccia & funghi", 11, "Salsiccia al finocchietto, funghi, provola affumicata"],
+      ["Tonno & cipolla", 11, "Tonno sott'olio, cipolla rossa caramellata, capperi, olive"],
+      ["Ortolana", 10, "Verdure grigliate di stagione, pesto di basilico, pomodorino secco", ["vegan"]],
+      ["Piccante", 10, "Salame piccante, 'nduja, fiordilatte, miele", ["hot"]],
+    ]},
+  { id: "panini", title: "Panini",
+    note: "Il nostro pane di focaccia, farcito al momento.",
+    items: [
+      ["Il Giumat", 9, "Porchetta, provola, cipolla caramellata, salsa della casa", ["new"]],
+      ["Caprese", 7, "Fiordilatte, pomodoro, basilico, olio EVO", ["veg"]],
+      ["Vegano dell'orto", 8, "Hummus di ceci, verdure grigliate, rucola, pomodorino secco", ["vegan"]],
+      ["Bresaola", 9, "Bresaola, rucola, scaglie di grana, limone"],
+      ["Pollo croccante al forno", 9, "Pollo al forno, insalata, pomodoro, maionese al limone"],
+    ]},
+  { id: "taglieri", title: "Taglieri",
+    note: "Da condividere. Serviti con focaccia calda.",
+    items: [
+      ["Tagliere Sicano", 18, "Salumi e formaggi del territorio, olive, marmellata di cipolle", ["per 2"]],
+      ["Tagliere grande", 32, "Selezione completa di salumi, formaggi, sottoli e focaccia", ["per 4"]],
+      ["Tagliere di formaggi", 16, "Pecorino, tuma, ricotta infornata, miele e noci", ["veg"]],
+      ["Tagliere vegano", 15, "Hummus, verdure grigliate, olive, caponata, pane", ["vegan"]],
+    ]},
+  { id: "birre", title: "Birre artigianali",
+    note: "La selezione ruota spesso: chiedi cosa c'è di nuovo alla spina.",
+    items: [
+      ["Spina del momento", 6, "Birrificio artigianale ospite · 0,4 L", ["rotazione"]],
+      ["Blanche", 6, "Birra di frumento, coriandolo e scorza d'arancia · 4,8% vol"],
+      ["American Pale Ale", 6.5, "Luppoli americani, note agrumate · 5,4% vol"],
+      ["IPA", 7, "Amara e resinosa · 6,5% vol"],
+      ["Stout", 7, "Tostata, caffè e cioccolato · 5,0% vol"],
+      ["Belgian Strong Ale", 8, "Corposa e speziata · 8,5% vol"],
+      ["Birra senza glutine", 6, "Lager · 4,7% vol", ["senza glutine"]],
+      ["Analcolica", 4.5, ""],
+    ]},
+  { id: "vini", title: "Vini",
+    items: [
+      ["Calice bianco", 5, "Grillo o Catarratto, Sicilia"],
+      ["Calice rosso", 5, "Nero d'Avola o Frappato, Sicilia"],
+      ["Calice bollicine", 6, "Spumante brut siciliano"],
+      ["Bottiglia della casa", 20, "Chiedi la selezione del momento"],
+    ]},
+  { id: "cocktail", title: "Cocktail",
+    items: [
+      ["Spritz", 7, "Aperol o Campari, prosecco, soda"],
+      ["Negroni", 8, "Gin, vermouth rosso, bitter"],
+      ["Gin tonic", 8, "Gin siciliano, tonica premium, agrumi"],
+      ["Amaro siciliano", 4, "Selezione di amari del territorio"],
+      ["Analcolico della casa", 6, "Agrumi, sciroppo di zagara, soda", ["0%"]],
+    ]},
+  { id: "caffe", title: "Caffè & bibite",
+    items: [
+      ["Caffè espresso", 1.2], ["Cappuccino", 1.8], ["Caffè freddo", 2],
+      ["Acqua 0,5 L", 1.5], ["Coca-Cola", 3], ["Bibite siciliane", 3.5, "Aranciata, limonata, chinotto"],
+    ]},
+];
+
+const EVENTS = [
+  { d: 0, title: "Sax in the Room", desc: "Sax dal vivo e focaccia calda", time: "dalle 21:30" },
+  { d: 2, title: "Live Set", desc: "DJ set con vinili selezionati", time: "dalle 22:00" },
+  { d: 6, title: "Serata scacchi & birre", desc: "Porta il tuo sfidante, la birra la mettiamo noi", time: "dalle 20:00" },
+];
+
+// giorni: 0 = domenica … 6 = sabato · orari in minuti (oltre 1440 = dopo mezzanotte)
+const H = (h, m = 0) => h * 60 + m;
+const OPEN = {
+  0: [[H(11), H(13)], [H(17, 30), H(25)]],
+  1: [],
+  2: [[H(11), H(13)], [H(17, 30), H(25)]],
+  3: [[H(11), H(13)], [H(17, 30), H(25)]],
+  4: [[H(11), H(13)], [H(17), H(25)]],
+  5: [[H(11), H(13)], [H(17, 30), H(25)]],
+  6: [[H(11), H(13)], [H(17, 30), H(25)]],
+};
+const DAYS = ["Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato"];
+
+// ============ HELPERS ============
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = p => p.toFixed(2).replace(".", ",") + " €";
+const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const hhmm = m => { m %= 1440; return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); };
+
+// WhatsApp
+const waMsg = encodeURIComponent("Ciao Giumat! Vorrei prenotare un tavolo per stasera.");
+document.querySelectorAll(".wa-link").forEach(a => a.href = `https://wa.me/${PHONE}?text=${waMsg}`);
+
+// marquee
+const words = ["Focaccia", "Craft beer", "Vinili", "Taglieri", "Vino", "Live music", "Scacchi", "Libri"];
+$("#marq").innerHTML = [...words, ...words, ...words, ...words].map(w => `<span>${w}</span><span>✦</span>`).join("");
+
+// ============ ORARI ============
+function romeNow() {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Rome", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false,
+  }).formatToParts(new Date()).map(x => [x.type, x.value]));
+  const day = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday);
+  return { day, min: (+p.hour % 24) * 60 + +p.minute };
+}
+
+function status() {
+  const { day, min } = romeNow();
+  const prev = (day + 6) % 7;
+  // still open from yesterday's late shift?
+  for (const [a, b] of OPEN[prev]) if (b > 1440 && min < b - 1440) return { open: true, text: `Aperto ora · chiude alle ${hhmm(b)}` };
+  for (const [a, b] of OPEN[day]) if (min >= a && min < b) return { open: true, text: `Aperto ora · chiude alle ${hhmm(b)}` };
+  for (const [a] of OPEN[day]) if (min < a) return { open: false, text: `Chiuso · apre alle ${hhmm(a)}` };
+  for (let i = 1; i <= 7; i++) {
+    const d = (day + i) % 7;
+    if (OPEN[d].length) return { open: false, text: `Chiuso · apre ${i === 1 ? "domani" : DAYS[d].toLowerCase()} alle ${hhmm(OPEN[d][0][0])}` };
+  }
+}
+function renderHours() {
+  const s = status(), el = $("#status");
+  el.classList.toggle("open", s.open);
+  el.lastElementChild.textContent = s.text;
+  const today = romeNow().day;
+  $("#hours").innerHTML = [1, 2, 3, 4, 5, 6, 0].map(d => {
+    const t = OPEN[d].length ? OPEN[d].map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(" · ") : "Chiuso";
+    return `<li class="${d === today ? "today" : ""}"><span>${DAYS[d]}${d === today ? " · oggi" : ""}</span><span>${t}</span></li>`;
+  }).join("");
+}
+renderHours();
+setInterval(renderHours, 60000);
+
+// ============ SERATE ============
+(function renderEvents() {
+  const base = new Date();
+  const fmtD = new Intl.DateTimeFormat("it-IT", { weekday: "short", day: "numeric", timeZone: "Europe/Rome" });
+  $("#events").innerHTML = EVENTS.map(e => {
+    let dt = new Date(base); dt.setDate(dt.getDate() + e.d + 1);
+    while (dt.getDay() === 1) dt.setDate(dt.getDate() + 1);           // il lunedì siamo chiusi
+    const [wd, n] = fmtD.format(dt).replace(".", "").split(" ");
+    return `<div class="event">
+      <div class="date"><small>${esc(wd)}</small><b>${esc(n)}</b></div>
+      <div><strong>${esc(e.title)}</strong><span>${esc(e.desc)}</span></div>
+      <div class="when">${esc(e.time)}</div>
+    </div>`;
+  }).join("");
+})();
+
+// ============ MENU ============
+function hl(text, q) {
+  if (!q) return esc(text);
+  const i = norm(text).indexOf(q);
+  if (i < 0) return esc(text);
+  return esc(text.slice(0, i)) + "<mark>" + esc(text.slice(i, i + q.length)) + "</mark>" + esc(text.slice(i + q.length));
+}
+const TAG = { veg: ["veg", "Vegetariana"], vegan: ["veg", "Vegana"], hot: ["hot", "Piccante"], new: ["hot", "Novità"] };
+function itemHTML([name, price, desc, tags], q) {
+  const chips = (tags || []).map(t => { const [c, l] = TAG[t] || ["", t]; return `<span class="chip ${c}">${esc(l)}</span>`; }).join("");
+  return `<article class="item">
+    <h4 class="item-name">${hl(name, q)}</h4>
+    <span class="item-price">${fmt(price)}</span>
+    ${desc ? `<p class="item-desc">${hl(desc, q)}</p>` : ""}
+    ${chips ? `<div class="item-extra">${chips}</div>` : ""}
+  </article>`;
+}
+const matches = (it, q) => !q || norm([it[0], it[2] || "", ...(it[3] || []).map(t => (TAG[t] || [, t])[1])].join(" ")).includes(q);
+
+function render(q = "") {
+  let total = 0;
+  $("#menuList").innerHTML = MENU.map(sec => {
+    const items = sec.items.filter(it => matches(it, q));
+    const f = sec.feature, fHit = f && (!q || norm(f.label + " " + f.desc).includes(q));
+    const n = items.length + (fHit ? 1 : 0);
+    total += n;
+    if (!n) return "";
+    return `<div class="msec" id="m-${sec.id}">
+      <div class="msec-head"><h3>${esc(sec.title)}</h3><span class="count">${items.length}</span></div>
+      ${sec.note && !q ? `<p class="msec-note">${esc(sec.note)}</p>` : ""}
+      ${fHit ? `<div class="feature"><div class="label">✦ ${esc(f.label)}</div>
+        <div class="row"><h4>${hl(f.name, q)}</h4><span class="price">${fmt(f.price)}</span></div>
+        <p>${hl(f.desc, q)}</p></div>` : ""}
+      <div class="items">${items.map(it => itemHTML(it, q)).join("")}</div>
+    </div>`;
+  }).join("");
+  $("#empty").classList.toggle("show", total === 0);
+  tabs.querySelectorAll(".tab").forEach(t => t.hidden = !document.getElementById("m-" + t.dataset.id));
+  cur = undefined; spy(true);
+}
+
+const tabs = $("#tabs");
+tabs.innerHTML = MENU.map(s => `<button class="tab" data-id="${s.id}">${esc(s.title)}</button>`).join("");
+const offset = () => $(".head").offsetHeight + $("#menuBar").offsetHeight;
+let cur, lockUntil = 0;
+
+function setActive(id) {
+  if (id === cur) return;
+  cur = id;
+  tabs.querySelectorAll(".tab").forEach(t => {
+    const on = t.dataset.id === id;
+    t.classList.toggle("active", on);
+    if (on) tabs.scrollLeft = t.offsetLeft - (tabs.clientWidth - t.offsetWidth) / 2;
+  });
+}
+function spy(force) {
+  if (!force && Date.now() < lockUntil) return;
+  const secs = [...document.querySelectorAll(".msec")];
+  if (!secs.length) return setActive(null);
+  const line = offset() + 24;
+  let hit = secs[0];
+  for (const s of secs) { if (s.getBoundingClientRect().top <= line) hit = s; else break; }
+  setActive(hit.id.slice(2));
+}
+tabs.addEventListener("click", e => {
+  const t = e.target.closest(".tab"); if (!t) return;
+  const el = document.getElementById("m-" + t.dataset.id); if (!el) return;
+  setActive(t.dataset.id);
+  glide(el.getBoundingClientRect().top + scrollY - offset() - 4);
+});
+
+let ticking = false, settle;
+addEventListener("scroll", () => {
+  if (!ticking) { ticking = true; requestAnimationFrame(() => { spy(); ticking = false; }); }
+  clearTimeout(settle); settle = setTimeout(() => { lockUntil = 0; spy(true); }, 160);
+  $("#fab").classList.toggle("show", scrollY > 500);
+}, { passive: true });
+
+const input = $("#q");
+input.addEventListener("input", () => {
+  $("#searchBox").classList.toggle("has-value", !!input.value);
+  render(norm(input.value.trim()));
+});
+$("#clear").addEventListener("click", () => { input.value = ""; input.dispatchEvent(new Event("input")); input.focus(); });
+
+// ancore della pagina (navbar, logo, "Guarda il menu"): scroll morbido sotto l'header
+function glide(y) {
+  y = Math.max(0, y);
+  lockUntil = Date.now() + 1000;
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return scrollTo(0, y);
+  // salti lunghi: avvicinati subito e scorri solo l'ultimo tratto, così resta fluido
+  const near = innerHeight * 1.2;
+  if (Math.abs(y - scrollY) > near) scrollTo(0, y + (y > scrollY ? -near : near));
+  requestAnimationFrame(() => scrollTo({ top: y, behavior: "smooth" }));
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a || a.classList.contains("wa-link")) return;
+  const id = a.getAttribute("href").slice(1);
+  const el = id === "top" ? document.body : document.getElementById(id);
+  if (!el) return;
+  e.preventDefault();
+  glide(id === "top" ? 0 : el.getBoundingClientRect().top + scrollY - $(".head").offsetHeight + 1);
+  history.replaceState(null, "", "#" + id);
+});
+
+// voce attiva nella navbar
+const navLinks = [...document.querySelectorAll(".head nav a")];
+function navSpy() {
+  const line = $(".head").offsetHeight + innerHeight * .3;
+  let on = null;
+  for (const a of navLinks) {
+    const s = document.querySelector(a.getAttribute("href"));
+    if (s && s.getBoundingClientRect().top <= line) on = a;
+  }
+  navLinks.forEach(a => a.classList.toggle("active", a === on));
+}
+addEventListener("scroll", navSpy, { passive: true });
+navSpy();
+
+// menu segreto
+$("#secret").addEventListener("click", e => {
+  const b = e.currentTarget, open = b.classList.toggle("open");
+  b.setAttribute("aria-expanded", open);
+});
+
+render();
+</script>
+
+<!-- ============ Giradischi 3D (Three.js). Se non carica, resta il vinile SVG ============ -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const wrap = document.querySelector(".disc-wrap");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); }
+catch (e) { throw new Error("WebGL non disponibile: resta il vinile SVG"); }
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NeutralToneMapping;
+renderer.toneMappingExposure = 1;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+wrap.prepend(renderer.domElement);
+
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.55;
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+camera.position.set(0, 8.3, 8.7);
+camera.lookAt(0, -0.25, 0.15);
+
+// luci
+scene.add(new THREE.HemisphereLight(0xfff4e2, 0x3a2a20, 0.6));
+const sun = new THREE.DirectionalLight(0xfff0dc, 2.2);
+sun.position.set(-3.5, 7, 3);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+Object.assign(sun.shadow.camera, { left: -4, right: 4, top: 4, bottom: -4, near: 1, far: 20 });
+sun.shadow.radius = 6;
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+
+// ---------- texture disegnate su canvas ----------
+await document.fonts.load("700 80px Fraunces").catch(() => {});
+const SERIF = "Fraunces, Georgia, serif";
+
+function canvasTex(size, draw) {
+  const c = document.createElement("canvas"); c.width = c.height = size;
+  draw(c.getContext("2d"), size);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  return t;
+}
+
+const vinylTex = canvasTex(1024, (g, S) => {
+  const c = S / 2;
+  g.fillStyle = "#121010"; g.fillRect(0, 0, S, S);
+  // solchi: anelli sottili con piccole variazioni, e qualche pausa tra le tracce
+  for (let r = c * 0.36; r < c * 0.985; r += 1.6) {
+    const gap = [0.52, 0.64, 0.77, 0.88].some(k => Math.abs(r / c - k) < 0.008);
+    const l = gap ? 30 : 16 + Math.random() * 9;
+    g.strokeStyle = `rgb(${l},${l - 2},${l - 3})`;
+    g.lineWidth = gap ? 3 : 0.9;
+    g.beginPath(); g.arc(c, c, r, 0, Math.PI * 2); g.stroke();
+  }
+  // etichetta
+  const R = c * 0.33;
+  g.fillStyle = "#c8442b"; g.beginPath(); g.arc(c, c, R, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = "rgba(244,234,216,.55)"; g.lineWidth = 3;
+  g.beginPath(); g.arc(c, c, R * 0.86, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = "#f4ead8"; g.textAlign = "center"; g.textBaseline = "middle";
+  g.font = `700 ${R * 0.36}px ${SERIF}`; g.fillText("Giumat", c, c - R * 0.36);
+  g.font = `500 ${R * 0.11}px ${SERIF}`;
+  g.fillText("BAR · FOCACCERIA", c, c + R * 0.42);
+  g.font = `500 ${R * 0.09}px ${SERIF}`;
+  g.fillText("SAN GIOVANNI GEMINI", c, c + R * 0.6);
+  g.fillText("LATO A", c + R * 0.62, c + 2);
+  g.fillText("33⅓", c - R * 0.62, c + 2);
+  // foro centrale
+  g.fillStyle = "#f4ead8"; g.beginPath(); g.arc(c, c, R * 0.07, 0, Math.PI * 2); g.fill();
+});
+
+const woodTex = canvasTex(512, (g, S) => {
+  g.fillStyle = "#7a4a2b"; g.fillRect(0, 0, S, S);
+  for (let i = 0; i < 140; i++) {
+    const y = Math.random() * S, a = Math.random() * 0.12;
+    g.strokeStyle = Math.random() > 0.5 ? `rgba(40,20,8,${a})` : `rgba(230,170,110,${a * 0.7})`;
+    g.lineWidth = 0.6 + Math.random() * 2.4;
+    g.beginPath(); g.moveTo(0, y);
+    for (let x = 0; x <= S; x += 32) g.lineTo(x, y + Math.sin(x / 70 + i) * 4);
+    g.stroke();
+  }
+});
+
+// ---------- modello ----------
+const deck = new THREE.Group();
+scene.add(deck);
+const M = {
+  wood: new THREE.MeshStandardMaterial({ map: woodTex, roughness: 0.5, metalness: 0 }),
+  top: new THREE.MeshStandardMaterial({ color: 0x1a1513, roughness: 0.7, envMapIntensity: 0.5 }),
+  metal: new THREE.MeshStandardMaterial({ color: 0xd9d4cc, metalness: 1, roughness: 0.28 }),
+  dark: new THREE.MeshStandardMaterial({ color: 0x2a2421, metalness: 0.6, roughness: 0.4 }),
+  vinyl: new THREE.MeshPhysicalMaterial({ map: vinylTex, roughness: 0.42, clearcoat: 0.6, clearcoatRoughness: 0.25, envMapIntensity: 0.35 }),
+  edge: new THREE.MeshStandardMaterial({ color: 0x0d0b0b, roughness: 0.3 }),
+  crust: new THREE.MeshStandardMaterial({ color: 0xc98a3c, metalness: 0.4, roughness: 0.35 }),
+  led: new THREE.MeshStandardMaterial({ color: 0xc8442b, emissive: 0xff5533, emissiveIntensity: 2 }),
+};
+const mesh = (geo, mat, x = 0, y = 0, z = 0, parent = deck) => {
+  const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z);
+  m.castShadow = m.receiveShadow = true; parent.add(m); return m;
+};
+
+// base in legno + piano scuro
+mesh(new RoundedBoxGeometry(4.6, 0.42, 3.7, 4, 0.08), M.wood, 0, -0.21, 0);
+mesh(new RoundedBoxGeometry(4.44, 0.04, 3.54, 2, 0.02), M.top, 0, 0.005, 0);
+for (const [x, z] of [[-2, -1.55], [2, -1.55], [-2, 1.55], [2, 1.55]])
+  mesh(new THREE.CylinderGeometry(0.17, 0.2, 0.1, 24), M.dark, x, -0.47, z);
+
+// piatto + vinile (ruotano insieme)
+const PX = -0.5;
+const spinner = new THREE.Group(); spinner.position.set(PX, 0, 0); deck.add(spinner);
+mesh(new THREE.CylinderGeometry(1.6, 1.6, 0.14, 96), M.metal, 0, 0.09, 0, spinner);
+// puntini stroboscopici sul bordo del piatto
+for (let i = 0; i < 48; i++) {
+  const a = (i / 48) * Math.PI * 2;
+  const d = mesh(new THREE.BoxGeometry(0.035, 0.05, 0.02), M.dark, Math.cos(a) * 1.605, 0.09, Math.sin(a) * 1.605, spinner);
+  d.rotation.y = -a; d.castShadow = false;
+}
+const vinyl = mesh(new THREE.CylinderGeometry(1.52, 1.52, 0.03, 128), [M.edge, M.vinyl, M.edge], 0, 0.175, 0, spinner);
+mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.12, 16), M.metal, 0, 0.22, 0, spinner);
+
+// braccio
+const PIV = new THREE.Vector3(1.55, 0, -1.2);
+mesh(new THREE.CylinderGeometry(0.26, 0.3, 0.1, 40), M.dark, PIV.x, 0.05, PIV.z);
+mesh(new THREE.CylinderGeometry(0.11, 0.13, 0.26, 24), M.metal, PIV.x, 0.2, PIV.z);
+const arm = new THREE.Group(); arm.position.set(PIV.x, 0.36, PIV.z); deck.add(arm);
+const pitch = new THREE.Group(); arm.add(pitch);
+mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.22, 24), M.dark, 0, 0, -0.32, pitch).rotation.x = Math.PI / 2; // contrappeso
+const tube = mesh(new THREE.CylinderGeometry(0.035, 0.035, 2.05, 16), M.metal, 0, 0, 0.92, pitch);
+tube.rotation.x = Math.PI / 2;
+const head = mesh(new THREE.BoxGeometry(0.2, 0.05, 0.34), M.dark, -0.04, -0.03, 2.02, pitch);
+head.rotation.y = 0.35;
+mesh(new THREE.BoxGeometry(0.13, 0.1, 0.17), M.crust, -0.05, -0.1, 2.04, pitch);
+// appoggio del braccio
+mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.28, 12), M.metal, PIV.x + 0.18, 0.14, 0.9);
+
+// comandi
+mesh(new THREE.CylinderGeometry(0.2, 0.22, 0.12, 32), M.metal, 1.75, 0.07, 1.3);
+mesh(new THREE.BoxGeometry(0.36, 0.05, 0.16), M.crust, 1.05, 0.04, 1.45);
+mesh(new THREE.BoxGeometry(0.36, 0.05, 0.16), M.dark, 1.05, 0.04, 1.2);
+const led = mesh(new THREE.SphereGeometry(0.045, 16, 12), M.led, 1.75, 0.04, 0.85);
+led.castShadow = false;
+
+// ombra a terra
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.2 }));
+ground.rotation.x = -Math.PI / 2; ground.position.y = -0.52; ground.receiveShadow = true;
+scene.add(ground);
+
+deck.rotation.y = -0.12;
+
+// ---------- interazione ----------
+const tilt = { x: 0, y: 0, tx: 0, ty: 0 };
+addEventListener("pointermove", e => {
+  if (e.pointerType !== "mouse") return;
+  const r = wrap.getBoundingClientRect();
+  tilt.ty = THREE.MathUtils.clamp((e.clientX - (r.left + r.width / 2)) / innerWidth, -0.5, 0.5) * 0.7;
+  tilt.tx = THREE.MathUtils.clamp((e.clientY - (r.top + r.height / 2)) / innerHeight, -0.5, 0.5) * 0.35;
+}, { passive: true });
+
+// touch (senza mouse): l'inclinazione segue lo scroll
+const touch = matchMedia("(hover: none)").matches;
+function scrollTilt() {
+  const r = wrap.getBoundingClientRect();
+  const p = THREE.MathUtils.clamp((r.top + r.height / 2) / innerHeight - 0.5, -0.8, 0.8);  // 0 = centro schermo
+  tilt.tx = -p * 0.45;          // si "apre" verso di te mentre scorri
+  tilt.ty = p * 0.55;
+}
+if (touch) scrollTilt();
+
+let lastY = scrollY, boost = 0;
+addEventListener("scroll", () => {
+  boost = Math.min(boost + Math.abs(scrollY - lastY) * 0.004, 4); lastY = scrollY;
+  if (touch) scrollTilt();
+}, { passive: true });
+
+function resize() {
+  const s = wrap.clientWidth;
+  renderer.setSize(s, s, false);
+  camera.aspect = 1; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(wrap);
+resize();
+
+let visible = true;
+new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loop(); }).observe(wrap);
+
+// ---------- animazione: il braccio si sposta, la puntina scende, il disco parte ----------
+const REST = 0.05, PLAY = -0.42;
+const ease = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const clock = new THREE.Clock();
+let speed = 0, running = false;
+
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+  const delay = 0.6;
+  // 0–1.2s: alza e ruota il braccio · 1.2–1.8s: abbassa · poi gira
+  const swing = reduce ? 1 : ease(THREE.MathUtils.clamp((t - delay) / 1.2, 0, 1));
+  const drop = reduce ? 1 : ease(THREE.MathUtils.clamp((t - delay - 1.2) / 0.6, 0, 1));
+  arm.rotation.y = REST + (PLAY - REST) * swing;
+  pitch.rotation.x = -0.09 * Math.min(swing * 3, 1) * (1 - drop);
+  const playing = drop >= 1;
+  const target = reduce ? 0 : playing ? 2.1 + boost : 0;
+  speed += (target - speed) * Math.min(dt * 1.6, 1);
+  boost *= Math.pow(0.15, dt);
+  spinner.rotation.y -= speed * dt;
+  led.material.emissiveIntensity = playing ? 2 + Math.sin(t * 3) * 0.4 : 0.3;
+  pitch.position.y = playing && !reduce ? Math.sin(t * 22) * 0.002 : 0;   // micro-vibrazione della puntina
+
+  tilt.x += (tilt.tx - tilt.x) * Math.min(dt * 4, 1);
+  tilt.y += (tilt.ty - tilt.y) * Math.min(dt * 4, 1);
+  const sway = reduce ? 0 : Math.sin(t * 0.5) * 0.04;
+  scene.rotation.set(tilt.x, tilt.y + sway, 0);
+
+  renderer.render(scene, camera);
+}
+function loop() {
+  if (running) return;
+  running = true;
+  (function tick() {
+    if (!visible || document.hidden) { running = false; return; }
+    frame(); requestAnimationFrame(tick);
+  })();
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden && visible) loop(); });
+
+frame();
+wrap.classList.add("three");
+loop();
+</script>
+</body>
+</html>
