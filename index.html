@@ -3,29 +3,51 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f4ead8">
+<meta name="theme-color" content="#ede3d0">
 <title>Giumat — Bar · Focacceria</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%231f1a17'/%3E%3Ccircle cx='32' cy='32' r='11' fill='%23c8442b'/%3E%3Ccircle cx='32' cy='32' r='2.5' fill='%23f4ead8'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<script>try{if(new URLSearchParams(location.search).get("tema")==="scuro"||localStorage.getItem("giumat-theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
 <style>
   :root {
-    --bg: #f4ead8;
-    --bg-2: #ede0c8;
-    --card: #fbf5ea;
-    --ink: #1f1a17;
-    --muted: #6b5d50;
-    --faint: #9a8a78;
-    --line: rgba(31, 26, 23, .12);
-    --tomato: #c8442b;
-    --olive: #5d6b2f;
-    --crust: #c98a3c;
-    --radius: 20px;
+    --bg: #ede3d0;
+    --bg-2: #e3d6be;
+    --card: #f5eee0;
+    --ink: #29251f;
+    --muted: #5e554a;
+    --faint: #8f8373;
+    --line: rgba(41,37,31, .12);
+    --rule: rgba(179,138,87, .55);   /* mostaza: linee e dettagli grafici */
+    --glass: rgba(237,227,208, .88);
+    /* Palette Giumat */
+    --olive: #30372b;     /* verde oliva — sezioni scure */
+    --cream: #ede3d0;     /* crema */
+    --wine: #773d35;      /* borgogna — bottoni e accenti */
+    --mustard: #b38a57;   /* mostaza — linee, etichette */
+    --espresso: #29251f;  /* espresso */
+    --accent: var(--wine);
+    --grain-blend: multiply;
+    --radius: 10px;
     --serif: "Fraunces", Georgia, serif;
-    --sans: "Inter", system-ui, -apple-system, sans-serif;
+    --sans: "DM Sans", system-ui, -apple-system, sans-serif;
     --head: 60px;
+  }
+  /* Variante a fondo scuro (toggle nella barra in alto) */
+  :root[data-theme="dark"] {
+    --bg: #29251f;
+    --bg-2: #221e19;
+    --card: #322d26;
+    --ink: #ede3d0;
+    --muted: #bfb39e;
+    --faint: #8f8373;
+    --line: rgba(237,227,208, .13);
+    --rule: rgba(179,138,87, .45);
+    --glass: rgba(41,37,31, .86);
+    --accent: #c9a274;          /* il borgogna su espresso non si legge: accenti testo in mostaza */
+    --grain-blend: overlay;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-padding-top: 130px; }
@@ -33,22 +55,34 @@
     background: var(--bg); color: var(--ink);
     font: 400 15px/1.55 var(--sans);
     -webkit-font-smoothing: antialiased; overflow-x: hidden;
+    transition: background-color .4s, color .4s;
   }
+  /* grana di carta: più "stampato", meno digitale */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .09;
+    mix-blend-mode: var(--grain-blend);
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.14 0 0 0 0 0.12 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .theme-toggle {
+    margin-left: 10px; background: none; border: 1px solid rgba(237,227,208,.35); color: var(--cream);
+    border-radius: 999px; padding: 2px 10px; font-size: 11px; letter-spacing: .04em; cursor: pointer;
+  }
+  .theme-toggle:hover { border-color: var(--mustard); color: var(--mustard); }
   button, input { font: inherit; color: inherit; }
   a { color: inherit; }
   .wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
 
   /* ---------- Demo ribbon ---------- */
   .demo {
-    background: var(--ink); color: var(--bg); text-align: center;
+    background: var(--espresso); color: var(--cream); text-align: center;
     font-size: 11.5px; letter-spacing: .06em; padding: 7px 16px;
   }
-  .demo b { color: var(--crust); font-weight: 600; }
+  .demo b { color: var(--mustard); font-weight: 600; }
 
   /* ---------- Header ---------- */
   .head {
     position: sticky; top: 0; z-index: 30; height: var(--head);
-    background: rgba(244, 234, 216, .86);
+    background: var(--glass);
     backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%);
     border-bottom: 1px solid var(--line);
   }
@@ -60,7 +94,7 @@
   .head nav a { text-decoration: none; color: var(--muted); position: relative; padding: 4px 0; transition: color .2s; }
   .head nav a::after {
     content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; border-radius: 2px;
-    background: var(--tomato); transform: scaleX(0); transition: transform .3s ease;
+    background: var(--accent); transform: scaleX(0); transition: transform .3s ease;
   }
   .head nav a:hover, .head nav a.active { color: var(--ink); }
   .head nav a.active::after { transform: scaleX(1); }
@@ -72,8 +106,8 @@
     text-decoration: none; border: 1.5px solid var(--ink); cursor: pointer; transition: transform .15s, background .2s;
   }
   .btn:active { transform: scale(.97); }
-  .btn.primary { background: var(--tomato); border-color: var(--tomato); color: #fff8ef; }
-  .btn.primary:hover { background: #b33a23; }
+  .btn.primary { background: var(--wine); border-color: var(--wine); color: #fff8ef; }
+  .btn.primary:hover { background: #5f2f29; }
   .btn.ghost { background: transparent; }
   .btn.ghost:hover { background: var(--bg-2); }
   .btn.small { padding: 8px 14px; font-size: 13px; }
@@ -87,11 +121,11 @@
     background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px;
   }
   .status i { width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
-  .status.open i { background: #3f9b4f; box-shadow: 0 0 0 4px rgba(63,155,79,.18); }
+  .status.open i { background: #5f7f4a; box-shadow: 0 0 0 4px rgba(95,127,74,.18); }
   .hero h1 {
     font: 500 clamp(44px, 11vw, 84px)/.98 var(--serif); letter-spacing: -.025em; margin: 18px 0 16px;
   }
-  .hero h1 em { color: var(--tomato); font-style: italic; }
+  .hero h1 em { color: var(--accent); font-style: italic; }
   .hero p.lead { color: var(--muted); font-size: 16.5px; max-width: 460px; }
   .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
 
@@ -105,29 +139,37 @@
   .badge {
     position: absolute; right: -4px; bottom: 6%; width: 116px; height: 116px; border-radius: 50%;
     transform: scale(0) rotate(-40deg); transition: transform .7s cubic-bezier(.3,1.6,.5,1);
-    box-shadow: 0 12px 26px -12px rgba(31,26,23,.55);
+    box-shadow: 0 12px 26px -12px rgba(41,37,31,.55);
   }
   .badge svg { width: 100%; height: 100%; display: block; }
   .badge .ring { transform-origin: 60px 60px; animation: spin 28s linear infinite; }
   .disc-wrap.built .badge, .disc-wrap.fallback .badge { transform: none; }
 
   /* ---------- Marquee ---------- */
-  .marquee { background: var(--ink); color: var(--bg); overflow: hidden; white-space: nowrap; padding: 13px 0; }
+  .marquee { background: var(--olive); color: var(--cream); border-block: 1px solid var(--mustard); overflow: hidden; white-space: nowrap; padding: 13px 0; }
   .marquee div { display: inline-block; animation: slide 30s linear infinite; font: 500 18px var(--serif); }
   .marquee span { margin: 0 18px; }
-  .marquee span:nth-child(even) { color: var(--crust); }
+  .marquee span:nth-child(even) { color: var(--mustard); }
   @keyframes slide { to { transform: translateX(-50%); } }
 
   /* ---------- Sections ---------- */
   section.block { padding: 64px 0 8px; }
-  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: var(--tomato); }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; color: var(--accent); }
+  /* numerazione editoriale: 01 — Il menu */
+  body { counter-reset: sec; }
+  section.block .eyebrow { counter-increment: sec; display: flex; align-items: center; gap: 12px; }
+  section.block .eyebrow::before { content: counter(sec, decimal-leading-zero); font: italic 500 30px/1 var(--serif); letter-spacing: 0; color: var(--mustard); text-transform: none; }
+  section.block .eyebrow::after { content: ""; width: 36px; height: 1px; background: var(--mustard); order: -1; display: none; }
+  /* comparsa morbida allo scroll (solo con JS) */
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
   h2.title { font: 500 clamp(34px, 6vw, 50px)/1.05 var(--serif); letter-spacing: -.02em; margin: 8px 0 12px; }
   .sub { color: var(--muted); max-width: 560px; }
 
   /* ---------- Menu ---------- */
   .menu-bar {
     position: sticky; top: var(--head); z-index: 20; margin: 22px -16px 0; padding: 10px 16px;
-    background: rgba(244, 234, 216, .9);
+    background: var(--glass);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--line);
   }
@@ -136,7 +178,7 @@
     background: var(--card); border: 1px solid var(--line);
     border-radius: 999px; padding: 9px 16px; margin-bottom: 10px;
   }
-  .search:focus-within { border-color: var(--tomato); }
+  .search:focus-within { border-color: var(--accent); }
   .search svg { flex: none; color: var(--faint); }
   .search input { flex: 1; background: none; border: 0; outline: 0; min-width: 0; }
   .search input::placeholder { color: var(--faint); }
@@ -149,49 +191,51 @@
     padding: 7px 14px; border-radius: 999px; cursor: pointer;
     font-size: 13px; font-weight: 500; color: var(--muted); transition: all .2s;
   }
-  .tab:hover { color: var(--ink); border-color: rgba(31,26,23,.3); }
+  .tab:hover { color: var(--ink); border-color: var(--mustard); }
   .tab.active { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 
   .msec { padding-top: 36px; }
   .msec-head { display: flex; align-items: baseline; gap: 12px; }
   .msec-head h3 { font: 500 clamp(28px, 5vw, 36px)/1.1 var(--serif); }
   .msec-head .count { color: var(--faint); font-size: 12px; letter-spacing: .1em; }
-  .msec-head::after { content: ""; flex: 1; height: 1px; background: var(--line); align-self: center; }
+  .msec-head::after { content: ""; flex: 1; height: 1px; background: var(--mustard); opacity: .6; align-self: center; }
   .msec-note { color: var(--muted); font-size: 13.5px; margin-top: 4px; }
 
   .items { display: grid; grid-template-columns: 1fr; gap: 0 36px; }
   @media (min-width: 760px) { .items { grid-template-columns: 1fr 1fr; } }
-  .item { padding: 16px 0; border-bottom: 1px dashed var(--line); display: grid; grid-template-columns: 1fr auto; gap: 3px 16px; }
+  .item { padding: 16px 0; border-bottom: 1px dashed var(--rule); display: grid; grid-template-columns: 1fr auto; gap: 3px 16px; }
   .item-name { font: 600 19px/1.25 var(--serif); }
-  .item-price { font-weight: 600; font-size: 14px; color: var(--tomato); font-variant-numeric: tabular-nums; white-space: nowrap; padding-top: 3px; }
+  .item-price { font-weight: 600; font-size: 14px; color: var(--accent); font-variant-numeric: tabular-nums; white-space: nowrap; padding-top: 3px; }
   .item-desc { grid-column: 1 / -1; color: var(--muted); font-size: 13.5px; }
   .item-extra { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px; }
   .chip { font-size: 11px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); background: var(--card); }
-  .chip.veg { color: var(--olive); border-color: rgba(93,107,47,.35); background: rgba(93,107,47,.08); }
-  .chip.hot { color: var(--tomato); border-color: rgba(200,68,43,.35); background: rgba(200,68,43,.07); }
-  mark { background: rgba(201,138,60,.35); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .chip.veg { color: var(--olive); border-color: rgba(48,55,43,.35); background: rgba(48,55,43,.08); }
+  .chip.hot { color: var(--accent); border-color: rgba(119,61,53,.35); background: rgba(119,61,53,.07); }
+  [data-theme="dark"] .chip.veg { color: #b4bf9a; border-color: rgba(180,191,154,.35); background: rgba(180,191,154,.08); }
+  [data-theme="dark"] .secret { border-color: var(--mustard); }
+  mark { background: rgba(179,138,87,.35); color: inherit; border-radius: 3px; padding: 0 1px; }
 
   .feature {
     margin-top: 18px; padding: 24px; border-radius: var(--radius);
-    background: var(--ink); color: var(--bg); position: relative; overflow: hidden;
+    background: var(--olive); color: var(--cream); position: relative; overflow: hidden; border: 1px solid rgba(179,138,87,.45);
   }
   .feature::after {
     content: ""; position: absolute; right: -40px; top: -40px; width: 160px; height: 160px; border-radius: 50%;
-    background: radial-gradient(circle, var(--crust) 0 18%, transparent 19%), repeating-radial-gradient(circle, #2c2521 0 2px, #1f1a17 2px 5px);
+    background: radial-gradient(circle, var(--mustard) 0 18%, transparent 19%), repeating-radial-gradient(circle, #3b4235 0 2px, #30372b 2px 5px);
     opacity: .9;
   }
-  .feature .label { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--crust); }
+  .feature .label { font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--mustard); }
   .feature .row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin: 6px 0 8px; position: relative; z-index: 1; max-width: calc(100% - 90px); }
   .feature h4 { font: 500 30px/1.1 var(--serif); }
-  .feature .price { font-size: 18px; color: var(--crust); font-weight: 600; white-space: nowrap; }
-  .feature p { color: #cbbfae; max-width: 480px; position: relative; z-index: 1; }
+  .feature .price { font-size: 18px; color: var(--mustard); font-weight: 600; white-space: nowrap; }
+  .feature p { color: #cfc6b4; max-width: 480px; position: relative; z-index: 1; }
 
   .secret {
     margin-top: 22px; border: 1.5px dashed var(--olive); border-radius: var(--radius);
     padding: 18px 20px; display: flex; gap: 14px; align-items: center; cursor: pointer;
-    background: rgba(93,107,47,.06); width: 100%; text-align: left;
+    background: rgba(48,55,43,.06); width: 100%; text-align: left;
   }
-  .secret .ico { flex: none; width: 42px; height: 42px; border-radius: 50%; background: var(--olive); color: #f4ead8; display: grid; place-items: center; }
+  .secret .ico { flex: none; width: 42px; height: 42px; border-radius: 50%; background: var(--olive); color: #ede3d0; display: grid; place-items: center; }
   .secret strong { font: 600 18px var(--serif); display: block; }
   .secret small { color: var(--muted); font-size: 13px; }
   .secret-body { display: none; }
@@ -216,26 +260,26 @@
     background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
     padding: 20px 18px; display: grid; gap: 10px; align-content: start;
   }
-  .vibe svg { color: var(--tomato); }
+  .vibe svg { color: var(--accent); }
   .vibe strong { font: 600 18px/1.2 var(--serif); }
   .vibe p { color: var(--muted); font-size: 13px; }
 
   .events { margin-top: 28px; display: grid; gap: 10px; }
   .event {
     display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center;
-    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px 12px 12px;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px 12px 12px;
   }
-  .event .date { background: var(--ink); color: var(--bg); border-radius: 12px; text-align: center; padding: 8px 0; line-height: 1.1; }
+  .event .date { background: var(--olive); color: var(--cream); border-radius: 6px; text-align: center; padding: 8px 0; line-height: 1.1; }
   .event .date b { display: block; font: 700 22px var(--serif); }
-  .event .date small { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--crust); }
+  .event .date small { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--mustard); }
   .event strong { font: 600 17px var(--serif); display: block; }
   .event span { color: var(--muted); font-size: 13px; }
-  .event .when { font-size: 13px; font-weight: 600; color: var(--tomato); white-space: nowrap; }
+  .event .when { font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
 
   /* ---------- Reviews ---------- */
   .rating { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 22px; }
   .rating .big { font: 500 72px/1 var(--serif); letter-spacing: -.03em; }
-  .stars { color: var(--crust); font-size: 20px; letter-spacing: 2px; }
+  .stars { color: var(--mustard); font-size: 20px; letter-spacing: 2px; }
   .rating small { color: var(--muted); font-size: 13px; display: block; }
   .praise { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
   .praise span { font-size: 13.5px; padding: 8px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
@@ -250,15 +294,15 @@
   .hours li:last-child { border: 0; }
   .hours li span:last-child { color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
   .hours li.today { font-weight: 600; }
-  .hours li.today span:last-child { color: var(--tomato); }
+  .hours li.today span:last-child { color: var(--accent); }
   .contact { display: grid; gap: 10px; }
   .contact a {
     display: flex; align-items: center; gap: 12px; text-decoration: none;
-    padding: 12px 14px; border-radius: 14px; border: 1px solid var(--line); background: var(--bg);
+    padding: 12px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg);
     font-size: 14px; transition: border-color .2s;
   }
-  .contact a:hover { border-color: var(--tomato); }
-  .contact a svg { color: var(--tomato); flex: none; }
+  .contact a:hover { border-color: var(--accent); }
+  .contact a svg { color: var(--accent); flex: none; }
   .contact a small { display: block; color: var(--faint); font-size: 12px; }
   .map { margin-top: 14px; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); aspect-ratio: 16/10; background: var(--bg-2); }
   .map iframe { width: 100%; height: 100%; border: 0; filter: sepia(.25) saturate(.9); }
@@ -271,16 +315,16 @@
   }
   #atmosfera { position: relative; overflow: hidden; }
   .trinacria-side {
-    position: absolute; z-index: -1; pointer-events: none; color: var(--tomato);
+    position: absolute; z-index: -1; pointer-events: none; color: var(--accent);
     width: 380px; aspect-ratio: 1; left: -190px; top: 30px; opacity: .07;
     animation: spin 180s linear infinite reverse;
   }
   .maiolica {
     height: 34px; margin-top: 72px;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Crect width='34' height='34' fill='%23fbf5ea'/%3E%3Cpath d='M17 3 31 17 17 31 3 17Z' fill='none' stroke='%235d6b2f' stroke-width='1.4'/%3E%3Ccircle cx='17' cy='17' r='5.5' fill='%23c8442b'/%3E%3Ccircle cx='17' cy='17' r='2' fill='%23c98a3c'/%3E%3Cpath d='M0 0h6a6 6 0 0 1-6 6zM34 0v6a6 6 0 0 1-6-6zM0 34v-6a6 6 0 0 1 6 6zM34 34h-6a6 6 0 0 1 6-6z' fill='%23c98a3c'/%3E%3Cpath d='M17 0v3M17 31v3M0 17h3M31 17h3' stroke='%235d6b2f' stroke-width='1.4'/%3E%3C/svg%3E") repeat-x center / auto 100%;
-    border-block: 2px solid var(--ink);
+    border-block: 2px solid var(--mustard);
   }
-  footer .tri { width: 46px; height: 46px; color: var(--tomato); margin: 0 auto 14px; display: block; opacity: .85; }
+  footer .tri { width: 46px; height: 46px; color: var(--accent); margin: 0 auto 14px; display: block; opacity: .85; }
   footer .credit { margin-top: 14px; font-size: 10.5px; opacity: .7; }
   footer .credit a { color: inherit; }
   footer .love { margin-top: 6px; font: italic 500 14px var(--serif); color: var(--muted); }
@@ -292,7 +336,7 @@
   .fab {
     position: fixed; right: calc(16px + env(safe-area-inset-right)); bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 40;
     transform: translateY(120px); transition: transform .45s cubic-bezier(.2,.9,.3,1.15);
-    box-shadow: 0 12px 30px -10px rgba(31,26,23,.5);
+    box-shadow: 0 12px 30px -10px rgba(41,37,31,.5);
     height: 54px; min-width: 54px; padding: 0 16px; gap: 0;
   }
   .fab svg { width: 22px; height: 22px; flex: none; }
@@ -320,12 +364,12 @@
 </svg>
 <svg class="trinacria-bg" aria-hidden="true"><use href="#trinacria"/></svg>
 
-<div class="demo"><b>Anteprima</b> · proposta grafica con contenuti e prezzi di esempio</div>
+<div class="demo"><b>Anteprima</b> · proposta grafica con contenuti e prezzi di esempio <button class="theme-toggle" id="themeToggle" type="button">Prova fondo scuro</button></div>
 
 <header class="head">
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Giumat">
-      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#1f1a17"/><circle cx="32" cy="32" r="22" fill="none" stroke="#3a322d" stroke-width="1.2"/><circle cx="32" cy="32" r="17" fill="none" stroke="#3a322d" stroke-width="1.2"/><circle cx="32" cy="32" r="11" fill="#c8442b"/><circle cx="32" cy="32" r="2.5" fill="#f4ead8"/></svg>
+      <svg width="30" height="30" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#29251f"/><circle cx="32" cy="32" r="22" fill="none" stroke="#3d372f" stroke-width="1.2"/><circle cx="32" cy="32" r="17" fill="none" stroke="#3d372f" stroke-width="1.2"/><circle cx="32" cy="32" r="11" fill="#773d35"/><circle cx="32" cy="32" r="2.5" fill="#ede3d0"/></svg>
       <span>Giumat</span>
     </a>
     <nav aria-label="Pagina">
@@ -339,8 +383,8 @@
   <div class="wrap">
     <div>
       <span class="status" id="status"><i></i><span>…</span></span>
-      <h1>La vostra <em>focacceria</em> di fiducia.</h1>
-      <p class="lead">Focacce fatte da noi, taglieri da condividere, birre artigianali che non trovi altrove e un giradischi sempre acceso. A San Giovanni Gemini.</p>
+      <h1>Entra per una focaccia. <em>Resta</em> per la serata.</h1>
+      <p class="lead">Focacce fatte da noi, un bicchiere di vino o una birra che non trovi altrove, un disco sul piatto. Il tipo di posto dove resti più del previsto. A San Giovanni Gemini.</p>
       <div class="cta">
         <a class="btn primary wa-link" href="#" target="_blank" rel="noopener">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.3-.7-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.1.1.3 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>
@@ -352,7 +396,7 @@
     <div class="disc-wrap" aria-hidden="true">
       <svg class="disc" viewBox="0 0 200 200">
         <defs>
-          <radialGradient id="shine" cx="30%" cy="25%" r="80%"><stop offset="0" stop-color="#4a413b"/><stop offset=".5" stop-color="#1f1a17"/><stop offset="1" stop-color="#14100e"/></radialGradient>
+          <radialGradient id="shine" cx="30%" cy="25%" r="80%"><stop offset="0" stop-color="#4a413b"/><stop offset=".5" stop-color="#29251f"/><stop offset="1" stop-color="#14100e"/></radialGradient>
         </defs>
         <circle cx="100" cy="100" r="98" fill="url(#shine)"/>
         <g class="spin">
@@ -360,10 +404,10 @@
           <circle cx="100" cy="100" r="90"/><circle cx="100" cy="100" r="84"/><circle cx="100" cy="100" r="78"/>
           <circle cx="100" cy="100" r="72"/><circle cx="100" cy="100" r="66"/><circle cx="100" cy="100" r="60"/><circle cx="100" cy="100" r="54"/><circle cx="100" cy="100" r="48"/>
         </g>
-        <circle cx="100" cy="100" r="38" fill="#c8442b"/>
+        <circle cx="100" cy="100" r="38" fill="#773d35"/>
         <path id="lbl" d="M100 74 a26 26 0 1 1 -.1 0" fill="none"/>
-        <text font-family="Fraunces, serif" font-size="7.6" font-weight="700" fill="#f4ead8"><textPath href="#lbl" textLength="160" lengthAdjust="spacing">GIUMAT · BAR · FOCACCERIA · </textPath></text>
-        <circle cx="100" cy="100" r="4" fill="#f4ead8"/>
+        <text font-family="Fraunces, serif" font-size="7.6" font-weight="700" fill="#ede3d0"><textPath href="#lbl" textLength="160" lengthAdjust="spacing">GIUMAT · BAR · FOCACCERIA · </textPath></text>
+        <circle cx="100" cy="100" r="4" fill="#ede3d0"/>
         </g>
         <path d="M40 60 A75 75 0 0 1 90 28" stroke="rgba(255,255,255,.12)" stroke-width="5" fill="none" stroke-linecap="round"/>
         <path d="M160 140 A75 75 0 0 1 110 172" stroke="rgba(255,255,255,.06)" stroke-width="5" fill="none" stroke-linecap="round"/>
@@ -371,14 +415,14 @@
       <div class="badge" role="img" aria-label="10 anni insieme">
         <svg viewBox="0 0 120 120">
           <defs><path id="badgeArc" d="M60 60 m-47 0 a47 47 0 1 1 94 0 a47 47 0 1 1 -94 0"/></defs>
-          <circle cx="60" cy="60" r="59" fill="#fbf5ea"/>
-          <circle cx="60" cy="60" r="57" fill="none" stroke="#1f1a17" stroke-width="2"/>
-          <circle cx="60" cy="60" r="38" fill="none" stroke="#c8442b" stroke-width="1.4" stroke-dasharray="2.2 3.2"/>
+          <circle cx="60" cy="60" r="59" fill="#f5eee0"/>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="#29251f" stroke-width="2"/>
+          <circle cx="60" cy="60" r="38" fill="none" stroke="#773d35" stroke-width="1.4" stroke-dasharray="2.2 3.2"/>
           <g class="ring">
-            <text font-family="Inter, sans-serif" font-size="8.6" font-weight="600" fill="#1f1a17"><textPath href="#badgeArc" textLength="292" lengthAdjust="spacing">ANNI INSIEME ✦ GRAZIE ✦ ANNI INSIEME ✦ GRAZIE ✦</textPath></text>
+            <text font-family="DM Sans, sans-serif" font-size="8.6" font-weight="600" fill="#29251f"><textPath href="#badgeArc" textLength="292" lengthAdjust="spacing">ANNI INSIEME ✦ GRAZIE ✦ ANNI INSIEME ✦ GRAZIE ✦</textPath></text>
           </g>
-          <text x="60" y="70" text-anchor="middle" font-family="Fraunces, serif" font-size="38" font-weight="700" fill="#c8442b">10</text>
-          <text x="60" y="84" text-anchor="middle" font-size="8" fill="#c98a3c">✦</text>
+          <text x="60" y="70" text-anchor="middle" font-family="Fraunces, serif" font-size="38" font-weight="700" fill="#773d35">10</text>
+          <text x="60" y="84" text-anchor="middle" font-size="8" fill="#b38a57">✦</text>
         </svg>
       </div>
     </div>
@@ -517,7 +561,7 @@
 <footer>
   <svg class="tri" aria-hidden="true"><use href="#trinacria"/></svg>
   <a class="brand" href="#top">
-    <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#1f1a17"/><circle cx="32" cy="32" r="11" fill="#c8442b"/><circle cx="32" cy="32" r="2.5" fill="#f4ead8"/></svg>
+    <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#29251f"/><circle cx="32" cy="32" r="11" fill="#773d35"/><circle cx="32" cy="32" r="2.5" fill="#ede3d0"/></svg>
     <span>Giumat</span>
   </a>
   <p>Bar · Focacceria · San Giovanni Gemini · Prezzi in euro</p>
@@ -531,6 +575,21 @@
 </a>
 
 <script>
+// ============ TEMA (chiaro crema / scuro espresso) ============
+(() => {
+  const root = document.documentElement, btn = document.getElementById("themeToggle");
+  const meta = document.querySelector("meta[name=theme-color]");
+  let t = new URLSearchParams(location.search).get("tema") === "scuro" ? "dark" : null;
+  try { t = t || localStorage.getItem("giumat-theme"); } catch (e) {}
+  const apply = v => {
+    if (v === "dark") root.dataset.theme = "dark"; else delete root.dataset.theme;
+    btn.textContent = v === "dark" ? "Prova fondo crema" : "Prova fondo scuro";
+    meta.content = v === "dark" ? "#29251f" : "#ede3d0";
+  };
+  apply(t);
+  btn.onclick = () => { t = t === "dark" ? "light" : "dark"; apply(t); try { localStorage.setItem("giumat-theme", t); } catch (e) {} };
+})();
+
 // ============ DATI (di esempio) ============
 const PHONE = "393288740453";
 
@@ -900,10 +959,10 @@ const vinylTex = canvasTex(1024, (g, S) => {
   }
   // etichetta
   const R = c * 0.33;
-  g.fillStyle = "#c8442b"; g.beginPath(); g.arc(c, c, R, 0, Math.PI * 2); g.fill();
-  g.strokeStyle = "rgba(244,234,216,.55)"; g.lineWidth = 3;
+  g.fillStyle = "#773d35"; g.beginPath(); g.arc(c, c, R, 0, Math.PI * 2); g.fill();
+  g.strokeStyle = "rgba(237,227,208,.55)"; g.lineWidth = 3;
   g.beginPath(); g.arc(c, c, R * 0.86, 0, Math.PI * 2); g.stroke();
-  g.fillStyle = "#f4ead8"; g.textAlign = "center"; g.textBaseline = "middle";
+  g.fillStyle = "#ede3d0"; g.textAlign = "center"; g.textBaseline = "middle";
   g.font = `700 ${R * 0.36}px ${SERIF}`; g.fillText("Giumat", c, c - R * 0.36);
   g.font = `500 ${R * 0.11}px ${SERIF}`;
   g.fillText("BAR · FOCACCERIA", c, c + R * 0.42);
@@ -912,7 +971,7 @@ const vinylTex = canvasTex(1024, (g, S) => {
   g.fillText("LATO A", c + R * 0.62, c + 2);
   g.fillText("33⅓", c - R * 0.62, c + 2);
   // foro centrale
-  g.fillStyle = "#f4ead8"; g.beginPath(); g.arc(c, c, R * 0.07, 0, Math.PI * 2); g.fill();
+  g.fillStyle = "#ede3d0"; g.beginPath(); g.arc(c, c, R * 0.07, 0, Math.PI * 2); g.fill();
 });
 
 const woodTex = canvasTex(512, (g, S) => {
@@ -937,8 +996,8 @@ const M = {
   dark: new THREE.MeshStandardMaterial({ color: 0x2a2421, metalness: 0.6, roughness: 0.4 }),
   vinyl: new THREE.MeshPhysicalMaterial({ map: vinylTex, roughness: 0.42, clearcoat: 0.6, clearcoatRoughness: 0.25, envMapIntensity: 0.35 }),
   edge: new THREE.MeshStandardMaterial({ color: 0x0d0b0b, roughness: 0.3 }),
-  crust: new THREE.MeshStandardMaterial({ color: 0xc98a3c, metalness: 0.4, roughness: 0.35 }),
-  led: new THREE.MeshStandardMaterial({ color: 0xc8442b, emissive: 0xff5533, emissiveIntensity: 2 }),
+  crust: new THREE.MeshStandardMaterial({ color: 0xb38a57, metalness: 0.4, roughness: 0.35 }),
+  led: new THREE.MeshStandardMaterial({ color: 0x773d35, emissive: 0xff5533, emissiveIntensity: 2 }),
 };
 const mesh = (geo, mat, x = 0, y = 0, z = 0, parent = deck) => {
   const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z);
@@ -1105,6 +1164,15 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden && vi
 frame();
 wrap.classList.add("three");
 loop();
+</script>
+<script>
+// comparsa morbida delle sezioni
+if (!matchMedia("(prefers-reduced-motion: reduce)").matches && "IntersectionObserver" in window) {
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+  document.querySelectorAll("h2.title, .sub, .feature, .vibe, .event, .panel, .rating, .praise, .nofry, .secret").forEach((el, i) => {
+    el.classList.add("reveal"); el.style.transitionDelay = (el.matches(".vibe, .event") ? (i % 4) * 80 : 0) + "ms"; io.observe(el);
+  });
+}
 </script>
 </body>
 </html>
